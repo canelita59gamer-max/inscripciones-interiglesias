@@ -40,9 +40,26 @@
   .wrap{ max-width: 980px; margin: 0 auto; padding: 0 20px 80px; }
 
   header.hero{
+    position: relative;
     padding: 48px 0 32px;
     border-bottom: 1px solid var(--line);
     margin-bottom: 40px;
+  }
+  .brand-badge{
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-50%);
+    background: rgba(16,22,15,0.95);
+    border: 1px solid rgba(52,199,119,0.18);
+    color: var(--green);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    border-radius: 100px;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.2);
   }
   .eyebrow{
     font-family: var(--font-mono);
@@ -273,6 +290,7 @@
 <div class="wrap">
 
   <header class="hero" data-aos="fade-up" data-aos-duration="700" data-aos-delay="100">
+    <div class="brand-badge">arena sports</div>
     <p class="eyebrow">Inscripción en tiempo real</p>
     <h1 class="title">Torneo <span>Interiglesias</span></h1>
     <p class="hero-sub">Registra tu iglesia y su equipo para el torneo. En cuanto envías el formulario, tu equipo aparece en el listado de inscritos más abajo.</p>
