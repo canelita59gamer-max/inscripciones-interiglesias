@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torneo Interiglesias — Inscripción</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" integrity="sha512-GwXGzx9el6qwWspj5M+LACgUu3jH+/D2U4L9LYW5y2h7M9wHbPvXPl+kWXI8n3NLn/HzHsBcLc2NwgXz7B7xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #060907;
+    --bg-2: #0D120E;
+    --card: #10160F;
+    --card-2: #151D16;
+    --line: #26362A;
+    --green: #34C777;
+    --green-dim: #1F7A48;
+    --green-deep: #0F3D24;
+    --red: #E0645A;
+    --text: #EEF3EE;
+    --muted: #8CA090;
+    --font-display: 'Oswald', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: radial-gradient(ellipse 120% 70% at 50% -10%, #0F1E13 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  ::selection{ background: var(--green); color: #06170D; }
+  a{ color: inherit; }
+
+  .wrap{ max-width: 980px; margin: 0 auto; padding: 0 20px 80px; }
+
+  header.hero{
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin: 0 0 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px; height:8px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 0 4px rgba(52,199,119,0.18);
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ box-shadow: 0 0 0 4px rgba(52,199,119,0.18);}
+    50%{ box-shadow: 0 0 0 8px rgba(52,199,119,0.05);}
+  }
+  h1.title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: clamp(30px, 5vw, 50px);
+    line-height: 1.05;
+    margin: 0 0 18px;
+    letter-spacing: 0.01em;
+  }
+  h1.title span{ color: var(--green); }
+  .hero-sub{ color: var(--muted); font-size: 16px; max-width: 560px; margin: 0 0 28px; }
+
+  .scoreboard{
+    display:grid; grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--card);
+  }
+  .score-cell{ padding: 20px 22px; border-right: 1px solid var(--line); }
+  .score-cell:last-child{ border-right: none; }
+  .score-num{
+    font-family: var(--font-mono); font-size: clamp(26px, 4vw, 36px); font-weight: 600;
+    color: var(--green); display:block; font-variant-numeric: tabular-nums;
+    transform: translateZ(0);
+  }
+  .score-label{ font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+  .section-head{ display:flex; align-items: baseline; gap: 14px; margin: 0 0 22px; }
+  .section-num{ font-family: var(--font-mono); color: var(--green-dim); font-size: 14px; }
+  h2.section-title{ font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; font-size: 24px; margin: 0; }
+
+  section{ margin-bottom: 56px; }
+
+  .form-card{ background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+  label{ display:block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 6px; }
+  input[type=text], input[type=date], select{
+    width: 100%; background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 11px 12px; color: var(--text); font-family: var(--font-body); font-size: 15px;
+    transition: border-color .15s ease; color-scheme: dark;
+  }
+  input:focus, select:focus{ outline: none; border-color: var(--green); }
+  .field{ margin-bottom: 18px; }
+  .field-row{
+    display:grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 12px;
+  }
+  @media (max-width: 720px){
+    .field-row{ grid-template-columns: 1fr 1fr; }
+    .field-row .doc-number, .field-row .birth-date{ grid-column: span 2; }
+  }
+  .player-row{ border-top: 1px dashed var(--line); padding-top: 14px; margin-top: 4px; }
+  .player-row:first-of-type{ border-top: none; padding-top: 0; margin-top: 0; }
+  .player-index{ font-family: var(--font-mono); font-size: 12px; color: var(--green-dim); margin-bottom: 8px; }
+  .remove-btn{
+    background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 8px;
+    padding: 11px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 13px;
+  }
+  .remove-btn:hover{ border-color: var(--red); color: var(--red); }
+
+  .btn-row{ display:flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; align-items:center; }
+  button{ font-family: var(--font-body); font-weight: 600; font-size: 15px; border-radius: 9px; padding: 13px 22px; cursor: pointer; border: none; }
+  .btn-primary{ background: var(--green); color: #06170D; }
+  .btn-primary:hover{ background: #45d688; }
+  .btn-secondary{ background: transparent; border: 1px solid var(--line); color: var(--text); }
+  .btn-secondary:hover{ border-color: var(--green); color: var(--green); }
+  button:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  button, .remove-btn, input, select{ transition: all .22s ease; }
+  button:hover:not(:disabled){ transform: translateY(-1px) scale(1.01); box-shadow: 0 16px 28px rgba(0,0,0,0.18); }
+  button:active:not(:disabled){ transform: translateY(0) scale(0.98); box-shadow: 0 8px 16px rgba(0,0,0,0.16); }
+  .remove-btn:hover{ transform: translateY(-1px) scale(1.01); }
+  .remove-btn:active{ transform: scale(0.98); }
+
+  input[type=text], input[type=date], select{
+    width: 100%; background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 11px 12px; color: var(--text); font-family: var(--font-body); font-size: 15px;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+    color-scheme: dark;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  }
+  input:focus, select:focus{ outline: none; border-color: var(--green); box-shadow: 0 0 0 6px rgba(52,199,119,0.12); transform: translateY(-0.5px); }
+
+  .team-card{ transition: transform .25s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease; }
+  .team-card:hover{ transform: translateY(-1px); box-shadow: 0 18px 36px rgba(0,0,0,0.16); }
+
+  .score-num{ position: relative; min-height: 1.15em; }
+
+  .eyebrow::before{
+    content:"";
+    width:8px; height:8px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 0 4px rgba(52,199,119,0.18);
+    animation: pulse 1.8s infinite;
+    will-change: transform, box-shadow;
+  }
+
+  .form-msg{ margin-top: 16px; font-size: 14px; padding: 12px 14px; border-radius: 8px; display:none; }
+  .form-msg.ok{ display:block; background: rgba(52,199,119,0.12); color: var(--green); border: 1px solid var(--green-dim); }
+  .form-msg.err{ display:block; background: rgba(224,100,90,0.12); color: var(--red); border: 1px solid #8a3b36; }
+
+  .consent-box{
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin-top: 22px;
+  }
+  .consent-title{ font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--green); margin-bottom: 8px; }
+  .consent-text{ font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .consent-check{ display:flex; align-items:flex-start; gap: 10px; cursor:pointer; }
+  .consent-check input{ width: auto; margin-top: 3px; accent-color: var(--green); }
+  .consent-check span{ font-size: 14px; color: var(--text); }
+
+  .refresh-note{ font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+  .team-card{ background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
+  .team-top{ display:flex; justify-content: space-between; align-items:center; gap: 14px; }
+  .team-top.clickable{ cursor: pointer; }
+  .team-name-block{ display:flex; align-items:baseline; gap: 12px; flex-wrap: wrap; }
+  .team-name{ font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.01em; font-size: 18px; }
+  .team-meta{ font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .badge{ font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding: 5px 10px; border-radius: 100px; white-space: nowrap; }
+  .badge.paid{ background: rgba(52,199,119,0.14); color: var(--green); border: 1px solid var(--green-dim); }
+  .badge.unpaid{ background: rgba(224,100,90,0.14); color: var(--red); border: 1px solid #8a3b36; }
+
+  .caret{ color: var(--muted); font-size: 13px; transition: transform .15s ease; }
+  .team-card.open .caret{ transform: rotate(180deg); }
+
+  .roster{
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    padding-top: 0;
+    transition: max-height .42s ease, opacity .28s ease, margin-top .28s ease, padding-top .28s ease;
+    border-top: 1px solid transparent;
+  }
+  .team-card.open .roster{
+    max-height: 1200px;
+    opacity: 1;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top-color: var(--line);
+  }
+  table.roster-table{ width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 13px; }
+  table.roster-table th{
+    text-align:left; color: var(--muted); font-weight: 500; text-transform: uppercase; font-size: 11px;
+    letter-spacing: 0.05em; padding: 6px 8px; border-bottom: 1px solid var(--line);
+  }
+  table.roster-table td{ padding: 8px; border-bottom: 1px solid rgba(38,54,42,0.6); }
+
+  .admin-row{ display:flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .admin-row button{ font-size: 13px; padding: 8px 14px; }
+  .btn-paid{ background: var(--green); color: #06170D; }
+  .btn-unpaid{ background: transparent; border: 1px solid var(--red); color: var(--red); }
+  .btn-delete{ background: transparent; border: 1px solid var(--line); color: var(--muted); margin-left: auto; }
+  .btn-delete:hover{ border-color: var(--red); color: var(--red); }
+
+  .empty-state{
+    color: var(--muted); font-family: var(--font-mono); font-size: 14px; padding: 30px 0; text-align: center;
+    border: 1px dashed var(--line); border-radius: 14px;
+  }
+
+  .organizer-toggle{
+    position: fixed; bottom: 22px; right: 22px; background: var(--card-2); border: 1px solid var(--line);
+    color: var(--muted); font-family: var(--font-mono); font-size: 12px; padding: 10px 16px; border-radius: 100px;
+    cursor: pointer; z-index: 50; box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+  }
+  .organizer-toggle.active{ color: var(--green); border-color: var(--green-dim); }
+
+  .modal-backdrop{
+    position: fixed; inset:0; background: rgba(3,6,4,0.75); display:none; align-items:center; justify-content:center;
+    z-index: 100; padding: 20px;
+  }
+  .modal-backdrop.show{ display:flex; }
+  .modal{ background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 26px; max-width: 340px; width: 100%; box-shadow: 0 24px 70px rgba(0,0,0,0.4); }
+  .modal h3{ font-family: var(--font-display); text-transform: uppercase; margin: 0 0 14px; font-size: 19px; }
+  .modal .btn-row{ margin-top: 18px; }
+
+  .admin-banner{
+    background: rgba(52,199,119,0.08); border: 1px solid var(--green-dim); border-radius: 10px;
+    padding: 10px 16px; font-family: var(--font-mono); font-size: 12px; color: var(--green); margin-bottom: 18px;
+  }
+
+  footer{ color: var(--muted); font-family: var(--font-mono); font-size: 12px; text-align:center; padding-top: 20px; }
+  .wrap{ max-width: 980px; margin: 0 auto; padding: 0 20px 80px; }
+  @media (max-width: 720px){
+    .scoreboard{ grid-template-columns: 1fr; gap: 12px; }
+    .score-cell{ border-right: none; border-bottom: 1px solid var(--line); }
+    .score-cell:last-child{ border-bottom: none; }
+    .btn-row{ flex-direction: column; align-items: stretch; }
+    .btn-row button{ width: 100%; }
+  }
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" integrity="sha512-G3M8IYV85/0GLD5oPmbu2STQr9CVkOgI0xZ7KaokWnW3O8m0Xm3zFTvI9u1AAxS93dz5I0H7JXCDV53XmYqI1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDkoBlrMc12TOCOe0LSg5kb2ZO6iNdW8Wo",
+    authDomain: "torneo-interiglesias.firebaseapp.com",
+    projectId: "torneo-interiglesias",
+    storageBucket: "torneo-interiglesias.firebasestorage.app",
+    messagingSenderId: "494456395930",
+    appId: "1:494456395930:web:5b680697e9460ece05a723",
+    measurementId: "G-D4QFL8RYH6"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero" data-aos="fade-up" data-aos-duration="700" data-aos-delay="100">
+    <p class="eyebrow">Inscripción en tiempo real</p>
+    <h1 class="title">Torneo <span>Interiglesias</span></h1>
+    <p class="hero-sub">Registra tu iglesia y su equipo para el torneo. En cuanto envías el formulario, tu equipo aparece en el listado de inscritos más abajo.</p>
+
+    <div class="scoreboard" data-aos="fade-up" data-aos-duration="700" data-aos-delay="160">
+      <div class="score-cell">
+        <span class="score-num" id="stat-teams">0</span>
+        <div class="score-label">Equipos inscritos</div>
+      </div>
+      <div class="score-cell">
+        <span class="score-num" id="stat-players">0</span>
+        <div class="score-label">Jugadores registrados</div>
+      </div>
+      <div class="score-cell">
+        <span class="score-num" id="stat-paid">—</span>
+        <div class="score-label">Estado de pagos</div>
+      </div>
+    </div>
+  </header>
+
+  <section data-aos="fade-up" data-aos-duration="700" data-aos-delay="120">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Inscribir equipo</h2>
+    </div>
+
+    <div class="form-card" data-aos="fade-right" data-aos-duration="700" data-aos-delay="180">
+      <form id="registration-form">
+        <div class="field">
+          <label for="church-name">Nombre de la iglesia</label>
+          <input type="text" id="church-name" placeholder="Ej. Iglesia Central" required>
+        </div>
+
+        <div id="players-container"></div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-secondary" id="add-player-btn">+ Agregar jugador</button>
+          <span class="refresh-note" id="player-counter">0/10 jugadores</span>
+        </div>
+
+        <div class="consent-box">
+          <div class="consent-title">Autorización de datos e imagen</div>
+          <div class="consent-text">
+            Al registrar este equipo, quien inscribe declara contar con la autorización de cada jugador (o de su acudiente, si es menor de edad) para el tratamiento de sus datos personales conforme a la Ley 1581 de 2012 y al artículo 15 de la Constitución Política de Colombia, así como para el uso de su imagen en fotografías y videos del torneo, de acuerdo con la Ley 23 de 1982 sobre derechos de autor. Ninguna imagen de los participantes será usada, publicada o explotada por terceros sin autorización previa.
+          </div>
+          <label class="consent-check">
+            <input type="checkbox" id="consent-checkbox" required>
+            <span>Autorizo el tratamiento de datos personales y el uso de imagen de los jugadores registrados, conforme a lo anterior.</span>
+          </label>
+
+          <div class="consent-title" style="margin-top:16px;">Exoneración de responsabilidad</div>
+          <div class="consent-text">
+            Quien inscribe declara que cada jugador participa en el torneo de forma voluntaria y bajo su propia responsabilidad, conociendo los riesgos físicos propios de la actividad deportiva. En consecuencia, exonera a la organización del torneo, sus directivos, colaboradores e iglesias participantes de cualquier responsabilidad por lesiones, daños físicos, accidentes o afectaciones a la salud que puedan presentarse antes, durante o después de los partidos.
+          </div>
+          <label class="consent-check">
+            <input type="checkbox" id="liability-checkbox" required>
+            <span>Acepto la exoneración de responsabilidad por lesiones o daños físicos descrita anteriormente.</span>
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn-primary" id="submit-btn">Registrar equipo</button>
+        </div>
+
+        <div class="form-msg" id="form-msg"></div>
+      </form>
+    </div>
+  </section>
+
+  <section data-aos="fade-up" data-aos-duration="700" data-aos-delay="120">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Equipos registrados</h2>
+    </div>
+    <div id="admin-banner" class="admin-banner" style="display:none;">
+      Modo organizador activo — puedes ver jugadores, documentos y marcar pagos.
+    </div>
+    <div class="board-controls" style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 18px;">
+      <span class="refresh-note" id="last-updated">Actualizando…</span>
+    </div>
+    <div id="teams-board"></div>
+  </section>
+
+  <footer>Torneo Interiglesias — inscripción digital</footer>
+</div>
+
+<button class="organizer-toggle" id="organizer-btn">Modo organizador</button>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <h3>Modo organizador</h3>
+    <label for="admin-pass">Clave de acceso</label>
+    <input type="text" id="admin-pass" placeholder="Ingresa la clave">
+    <div class="btn-row">
+      <button class="btn-primary" id="admin-confirm">Entrar</button>
+      <button class="btn-secondary" id="admin-cancel">Cancelar</button>
+    </div>
+    <div class="form-msg err" id="admin-err" style="display:none;">Clave incorrecta.</div>
+  </div>
+</div>
+
+<script>
+const DOC_TYPES = ["CC","TI","Otro"];
+const ADMIN_PASSWORD = "torneo2026"; // organizador: cambia esta clave antes de compartir el link
+const TEAMS_COLLECTION = "teams";
+const MAX_PLAYERS = 10;
+
+function animateValue(el, start, end, duration = 700){
+  const range = end - start;
+  let startTime = null;
+  const step = (timestamp) => {
+    if(!startTime) startTime = timestamp;
+    const progress = Math.min((timestamp - startTime) / duration, 1);
+    el.textContent = Math.floor(start + range * progress);
+    if(progress < 1) window.requestAnimationFrame(step);
+  };
+  window.requestAnimationFrame(step);
+}
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+function updateAddButtonState(){
+  const container = document.getElementById('players-container');
+  const count = container.querySelectorAll('.player-row').length;
+  const addBtn = document.getElementById('add-player-btn');
+  const counter = document.getElementById('player-counter');
+  counter.textContent = `${count}/${MAX_PLAYERS} jugadores`;
+  addBtn.disabled = count >= MAX_PLAYERS;
+}
+
+function renumberPlayers(){
+  document.querySelectorAll('#players-container .player-row').forEach((row, i) => {
+    row.querySelector('.player-index').textContent = `Jugador ${i + 1}`;
+  });
+}
+
+function addPlayerRow(){
+  const container = document.getElementById('players-container');
+  if(container.querySelectorAll('.player-row').length >= MAX_PLAYERS) return;
+  playerCount++;
+  const row = document.createElement('div');
+  row.className = 'player-row';
+  row.dataset.playerId = playerCount;
+  row.innerHTML = `
+    <div class="player-index">Jugador ${container.querySelectorAll('.player-row').length + 1}</div>
+    <div class="field-row">
+      <div>
+        <label>Nombre completo</label>
+        <input type="text" class="p-name" placeholder="Nombre y apellido" required>
+      </div>
+      <div>
+        <label>Tipo doc.</label>
+        <select class="p-doctype">
+          ${DOC_TYPES.map(t => `<option value="${t}">${t}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label>Número doc.</label>
+        <input type="text" class="p-docnumber doc-number" placeholder="000000000" required>
+      </div>
+      <div>
+        <label>Fecha de nacimiento</label>
+        <input type="date" class="p-birthdate birth-date" required>
+      </div>
+      <button type="button" class="remove-btn" title="Quitar jugador">✕</button>
+    </div>
+  `;
+  row.querySelector('.remove-btn').addEventListener('click', () => {
+    row.remove();
+    renumberPlayers();
+    updateAddButtonState();
+  });
+  container.appendChild(row);
+  updateAddButtonState();
+}
+
+document.getElementById('add-player-btn').addEventListener('click', addPlayerRow);
+for(let i=0;i<5;i++) addPlayerRow();
+
+function showMsg(text, ok){
+  const el = document.getElementById('form-msg');
+  el.textContent = text;
+  el.className = 'form-msg ' + (ok ? 'ok' : 'err');
+}
+
+document.getElementById('registration-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const submitBtn = document.getElementById('submit-btn');
+  const churchName = document.getElementById('church-name').value.trim();
+  const consented = document.getElementById('consent-checkbox').checked;
+  const liabilityAccepted = document.getElementById('liability-checkbox').checked;
+
+  const rows = document.querySelectorAll('#players-container .player-row');
+  if(rows.length === 0){
+    showMsg('Agrega al menos un jugador.', false);
+    return;
+  }
+
+  const players = [];
+  let valid = true;
+  rows.forEach(row => {
+    const name = row.querySelector('.p-name').value.trim();
+    const docType = row.querySelector('.p-doctype').value;
+    const docNumber = row.querySelector('.p-docnumber').value.trim();
+    const birthDate = row.querySelector('.p-birthdate').value;
+    if(!name || !docNumber || !birthDate) valid = false;
+    players.push({ name, docType, docNumber, birthDate });
+  });
+
+  if(!churchName || !valid){
+    showMsg('Completa todos los campos antes de enviar.', false);
+    return;
+  }
+  if(!consented){
+    showMsg('Debes autorizar el tratamiento de datos e imagen para poder registrar el equipo.', false);
+    return;
+  }
+  if(!liabilityAccepted){
+    showMsg('Debes aceptar la exoneración de responsabilidad por lesiones o daños físicos para poder registrar el equipo.', false);
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Registrando…';
+
+  const newTeam = {
+    churchName,
+    players,
+    paid: false,
+    consent: true,
+    liabilityWaiver: true,
+    registeredAt: new Date().toISOString()
+  };
+
+  try{
+    const result = await db.collection(TEAMS_COLLECTION).add(newTeam);
+    if(!result){
+      showMsg('No se pudo registrar el equipo. Intenta de nuevo.', false);
+    } else {
+      showMsg(`Equipo "${churchName}" registrado con ${players.length} jugador(es).`, true);
+      document.getElementById('registration-form').reset();
+      document.getElementById('players-container').innerHTML = '';
+      playerCount = 0;
+      for(let i=0;i<5;i++) addPlayerRow();
+    }
+  } catch(err){
+    console.error('Error al registrar equipo:', err);
+    showMsg('Ocurrió un error guardando el registro. Intenta de nuevo.', false);
+  } finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Registrar equipo';
+  }
+});
+
+function formatDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleString('es-CO', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderTeams(list){
+  const board = document.getElementById('teams-board');
+  const statTeams = document.getElementById('stat-teams');
+  const statPlayers = document.getElementById('stat-players');
+  const statPaid = document.getElementById('stat-paid');
+  const banner = document.getElementById('admin-banner');
+
+  banner.style.display = isAdmin ? 'block' : 'none';
+
+  const totalPlayers = list.reduce((sum,t) => sum + t.players.length, 0);
+  animateValue(statTeams, parseInt(statTeams.textContent) || 0, list.length);
+  animateValue(statPlayers, parseInt(statPlayers.textContent) || 0, totalPlayers);
+  statPaid.textContent = isAdmin ? `${list.filter(t => t.paid).length} pagados` : '—';
+
+  const sorted = [...list].sort((a,b) => new Date(b.registeredAt) - new Date(a.registeredAt));
+
+  if(!isAdmin){
+    board.innerHTML = sorted.map(team => `
+      <div class="team-card">
+        <div class="team-top">
+          <div class="team-name-block">
+            <span class="team-name">${escapeHtml(team.churchName)}</span>
+            <span class="team-meta">Inscrito ${formatDate(team.registeredAt)}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    return;
+  }
+
+  // Vista admin: nombre, jugadores, documentos, fecha de nacimiento y estado de pago
+  board.innerHTML = sorted.map(team => {
+    const isOpen = openTeamIds.has(team.id);
+    return `
+    <div class="team-card ${isOpen ? 'open' : ''}" data-team-id="${team.id}">
+      <div class="team-top clickable" data-toggle="${team.id}">
+        <div class="team-name-block">
+          <span class="team-name">${escapeHtml(team.churchName)}</span>
+          <span class="team-meta">${team.players.length} jugador(es) · ${formatDate(team.registeredAt)}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="badge ${team.paid ? 'paid' : 'unpaid'}">${team.paid ? 'Pagado' : 'No pagado'}</span>
+          <span class="caret">▾</span>
+        </div>
+      </div>
+      <div class="roster">
+        <table class="roster-table">
+          <thead>
+            <tr><th>#</th><th>Nombre</th><th>Documento</th><th>Fecha nac.</th></tr>
+          </thead>
+          <tbody>
+            ${team.players.map((p,i) => `
+              <tr>
+                <td>${i+1}</td>
+                <td>${escapeHtml(p.name)}</td>
+                <td>${p.docType} ${escapeHtml(p.docNumber)}</td>
+                <td>${escapeHtml(p.birthDate || '')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <div class="admin-row">
+          <button class="btn-paid" data-action="paid" data-id="${team.id}">Marcar pagado</button>
+          <button class="btn-unpaid" data-action="unpaid" data-id="${team.id}">Marcar no pagado</button>
+          <button class="btn-delete" data-action="delete" data-id="${team.id}">Eliminar equipo</button>
+        </div>
+      </div>
+    </div>
+  `;
+  }).join('');
+
+  board.querySelectorAll('[data-toggle]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.toggle;
+      if(openTeamIds.has(id)) openTeamIds.delete(id); else openTeamIds.add(id);
+      renderTeams(currentList);
+      const target = board.querySelector(`[data-team-id="${id}"]`);
+      if(target){ target.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+    });
+  });
+
+  board.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const id = el.dataset.id;
+      const action = el.dataset.action;
+      await handleAdminAction(id, action);
+    });
+  });
+}
+
+function subscribeToTeams(){
+  db.collection(TEAMS_COLLECTION).onSnapshot((snapshot) => {
+    currentList = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    renderTeams(currentList);
+    document.getElementById('last-updated').textContent =
+      'Actualizado ' + new Date().toLocaleTimeString('es-CO', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  }, (err) => {
+    console.error('Error escuchando equipos:', err);
+    document.getElementById('teams-board').innerHTML = '<div class="empty-state">No se pudo cargar la lista de equipos.</div>';
+  });
+}
+
+async function handleAdminAction(id, action){
+  try{
+    if(action === 'delete'){
+      if(!confirm('¿Eliminar este equipo del registro? Esta acción no se puede deshacer.')) return;
+      await db.collection(TEAMS_COLLECTION).doc(id).delete();
+    } else {
+      await db.collection(TEAMS_COLLECTION).doc(id).update({ paid: action === 'paid' });
+    }
+  } catch(err){
+    console.error('Error actualizando equipo:', err);
+    alert('No se pudo actualizar el equipo. Intenta de nuevo.');
+  }
+}
+
+const organizerBtn = document.getElementById('organizer-btn');
+const modalBackdrop = document.getElementById('modal-backdrop');
+const adminErr = document.getElementById('admin-err');
+
+document.addEventListener('DOMContentLoaded', () => {
+  if(window.AOS){ AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic' }); }
+});
+
+organizerBtn.addEventListener('click', () => {
+  if(isAdmin){
+    isAdmin = false;
+    organizerBtn.textContent = 'Modo organizador';
+    organizerBtn.classList.remove('active');
+    openTeamIds.clear();
+    renderTeams(currentList);
+  } else {
+    modalBackdrop.classList.add('show');
+    document.getElementById('admin-pass').value = '';
+    adminErr.style.display = 'none';
+  }
+});
+
+document.getElementById('admin-cancel').addEventListener('click', () => {
+  modalBackdrop.classList.remove('show');
+});
+
+document.getElementById('admin-confirm').addEventListener('click', () => {
+  const val = document.getElementById('admin-pass').value;
+  if(val === ADMIN_PASSWORD){
+    isAdmin = true;
+    organizerBtn.textContent = 'Organizador activo';
+    organizerBtn.classList.add('active');
+    modalBackdrop.classList.remove('show');
+    renderTeams(currentList);
+  } else {
+    adminErr.style.display = 'block';
+  }
+});
+
+document.getElementById('admin-pass').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') document.getElementById('admin-confirm').click();
+});
+
+subscribeToTeams();
+</script>
+
+</body>
+</html>
