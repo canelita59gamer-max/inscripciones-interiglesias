@@ -45,22 +45,6 @@
     border-bottom: 1px solid var(--line);
     margin-bottom: 40px;
   }
-  .brand-badge{
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateY(-50%);
-    background: rgba(16,22,15,0.95);
-    border: 1px solid rgba(52,199,119,0.18);
-    color: var(--green);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 10px 14px;
-    border-radius: 100px;
-    box-shadow: 0 14px 30px rgba(0,0,0,0.2);
-  }
   .eyebrow{
     font-family: var(--font-mono);
     font-size: 12px;
@@ -290,7 +274,6 @@
 <div class="wrap">
 
   <header class="hero" data-aos="fade-up" data-aos-duration="700" data-aos-delay="100">
-    <div class="brand-badge">arena sports</div>
     <p class="eyebrow">Inscripción en tiempo real</p>
     <h1 class="title">Torneo <span>Interiglesias</span></h1>
     <p class="hero-sub">Registra tu iglesia y su equipo para el torneo. En cuanto envías el formulario, tu equipo aparece en el listado de inscritos más abajo.</p>
@@ -397,6 +380,11 @@ const DOC_TYPES = ["CC","TI","Otro"];
 const ADMIN_PASSWORD = "torneo2026"; // organizador: cambia esta clave antes de compartir el link
 const TEAMS_COLLECTION = "teams";
 const MAX_PLAYERS = 10;
+
+let playerCount = 0;
+let isAdmin = false;
+let openTeamIds = new Set();
+let currentList = [];
 
 function animateValue(el, start, end, duration = 700){
   const range = end - start;
