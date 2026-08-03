@@ -228,6 +228,10 @@
   }
   .organizer-toggle.active{ color: var(--green); border-color: var(--green-dim); }
 
+  .admin-only{ display:none !important; }
+  body.admin-active .admin-only{ display:block !important; }
+  body.admin-active .scoreboard.admin-only{ display:grid !important; }
+
   .modal-backdrop{
     position: fixed; inset:0; background: rgba(3,6,4,0.75); display:none; align-items:center; justify-content:center;
     z-index: 100; padding: 20px;
@@ -271,6 +275,8 @@
 </head>
 <body>
 
+<div class="nav-logo"><img src="assets/images/logo arena.jpeg" alt="Logo Arena" style="height:45px; width:auto; object-fit:contain;"></div>
+
 <div class="wrap">
 
   <header class="hero" data-aos="fade-up" data-aos-duration="700" data-aos-delay="100">
@@ -278,7 +284,7 @@
     <h1 class="title">Torneo <span>Interiglesias</span></h1>
     <p class="hero-sub">Registra tu iglesia y su equipo para el torneo. En cuanto envías el formulario, tu equipo aparece en el listado de inscritos más abajo.</p>
 
-    <div class="scoreboard" data-aos="fade-up" data-aos-duration="700" data-aos-delay="160">
+    <div class="scoreboard admin-only" data-aos="fade-up" data-aos-duration="700" data-aos-delay="160">
       <div class="score-cell">
         <span class="score-num" id="stat-teams">0</span>
         <div class="score-label">Equipos inscritos</div>
@@ -343,7 +349,7 @@
     </div>
   </section>
 
-  <section data-aos="fade-up" data-aos-duration="700" data-aos-delay="120">
+  <section class="admin-only" data-aos="fade-up" data-aos-duration="700" data-aos-delay="120">
     <div class="section-head">
       <span class="section-num">02</span>
       <h2 class="section-title">Equipos registrados</h2>
@@ -399,6 +405,10 @@ function animateValue(el, start, end, duration = 700){
 }
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+function syncAdminVisibility(){
+  document.body.classList.toggle('admin-active', isAdmin);
+}
 
 function updateAddButtonState(){
   const container = document.getElementById('players-container');
@@ -673,6 +683,7 @@ organizerBtn.addEventListener('click', () => {
     organizerBtn.textContent = 'Modo organizador';
     organizerBtn.classList.remove('active');
     openTeamIds.clear();
+    syncAdminVisibility();
     renderTeams(currentList);
   } else {
     modalBackdrop.classList.add('show');
@@ -692,6 +703,7 @@ document.getElementById('admin-confirm').addEventListener('click', () => {
     organizerBtn.textContent = 'Organizador activo';
     organizerBtn.classList.add('active');
     modalBackdrop.classList.remove('show');
+    syncAdminVisibility();
     renderTeams(currentList);
   } else {
     adminErr.style.display = 'block';
@@ -702,6 +714,7 @@ document.getElementById('admin-pass').addEventListener('keydown', (e) => {
   if(e.key === 'Enter') document.getElementById('admin-confirm').click();
 });
 
+syncAdminVisibility();
 subscribeToTeams();
 </script>
 
