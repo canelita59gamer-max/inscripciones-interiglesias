@@ -794,13 +794,6 @@ async function saveTeamEdits(){
     return;
   }
 
-  if(players.length > getMaxPlayers()){
-    const msg = document.getElementById('team-edit-msg');
-    msg.textContent = `El máximo permitido es ${getMaxPlayers()} jugadores por equipo.`;
-    msg.style.display = 'block';
-    return;
-  }
-
   try{
     const normalizedPlayers = players.map(({ name, docType, docNumber, birthDate }) => ({
       name,
