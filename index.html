@@ -355,7 +355,14 @@
       <h2 class="section-title">Equipos registrados</h2>
     </div>
     <div id="admin-banner" class="admin-banner" style="display:none;">
-      Modo organizador activo — puedes ver jugadores, documentos y marcar pagos.
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <span>Modo organizador activo — puedes ver jugadores, documentos y marcar pagos.</span>
+        <label style="display:flex; align-items:center; gap:6px; font-size:12px;">
+          Máx. jugadores
+          <input type="number" id="max-players-admin" min="1" step="1" value="15" style="width:72px;">
+        </label>
+        <button type="button" class="btn-secondary" id="max-players-save" style="padding:7px 12px;">Guardar</button>
+      </div>
     </div>
     <div class="board-controls" style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 18px;">
       <span class="refresh-note" id="last-updated">Actualizando…</span>
@@ -381,16 +388,49 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="team-edit-backdrop" style="display:none;">
+  <div class="modal">
+    <h3>Editar equipo</h3>
+    <div id="team-edit-info" style="margin-bottom: 12px;"></div>
+    <div id="team-edit-players"></div>
+    <div id="team-edit-counter" style="margin-top: 10px; font-size: 13px; color: #4a5568;">0/15 jugadores</div>
+    <div class="btn-row">
+      <button type="button" class="btn-primary" id="team-edit-add-player">Agregar jugador</button>
+      <button type="button" class="btn-secondary" id="team-edit-cancel">Cancelar</button>
+      <button type="button" class="btn-primary" id="team-edit-save">Guardar cambios</button>
+    </div>
+    <div class="form-msg err" id="team-edit-msg" style="display:none;"></div>
+  </div>
+</div>
+
 <script>
 const DOC_TYPES = ["CC","TI","Otro"];
 const ADMIN_PASSWORD = "torneo2026"; // organizador: cambia esta clave antes de compartir el link
 const TEAMS_COLLECTION = "teams";
-const MAX_PLAYERS = 14;
+const MAX_PLAYERS = 15;
+const MAX_PLAYERS_STORAGE_KEY = "torneoMaxPlayers";
 
 let playerCount = 0;
 let isAdmin = false;
 let openTeamIds = new Set();
 let currentList = [];
+let editingTeamId = null;
+
+function getMaxPlayers(){
+  const saved = Number(localStorage.getItem(MAX_PLAYERS_STORAGE_KEY));
+  if(Number.isFinite(saved) && saved > 0){
+    return saved;
+  }
+  localStorage.setItem(MAX_PLAYERS_STORAGE_KEY, String(MAX_PLAYERS));
+  return MAX_PLAYERS;
+}
+
+function setMaxPlayers(value){
+  const nextValue = Number(value);
+  const safeValue = Number.isFinite(nextValue) && nextValue > 0 ? nextValue : MAX_PLAYERS;
+  localStorage.setItem(MAX_PLAYERS_STORAGE_KEY, String(safeValue));
+  return safeValue;
+}
 
 function animateValue(el, start, end, duration = 700){
   const range = end - start;
@@ -415,8 +455,9 @@ function updateAddButtonState(){
   const count = container.querySelectorAll('.player-row').length;
   const addBtn = document.getElementById('add-player-btn');
   const counter = document.getElementById('player-counter');
-  counter.textContent = `${count}/${MAX_PLAYERS} jugadores`;
-  addBtn.disabled = count >= MAX_PLAYERS;
+  const maxPlayers = getMaxPlayers();
+  counter.textContent = `${count}/${maxPlayers} jugadores`;
+  addBtn.disabled = count >= maxPlayers;
 }
 
 function renumberPlayers(){
@@ -427,7 +468,7 @@ function renumberPlayers(){
 
 function addPlayerRow(){
   const container = document.getElementById('players-container');
-  if(container.querySelectorAll('.player-row').length >= MAX_PLAYERS) return;
+  if(container.querySelectorAll('.player-row').length >= getMaxPlayers()) return;
   playerCount++;
   const row = document.createElement('div');
   row.className = 'player-row';
@@ -616,6 +657,7 @@ function renderTeams(list){
         <div class="admin-row">
           <button class="btn-paid" data-action="paid" data-id="${team.id}">Marcar pagado</button>
           <button class="btn-unpaid" data-action="unpaid" data-id="${team.id}">Marcar no pagado</button>
+          <button class="btn-primary" data-action="edit" data-id="${team.id}">Editar equipo</button>
           <button class="btn-delete" data-action="delete" data-id="${team.id}">Eliminar equipo</button>
         </div>
       </div>
@@ -655,11 +697,141 @@ function subscribeToTeams(){
   });
 }
 
+function updateTeamEditCounter(){
+  const maxPlayers = getMaxPlayers();
+  const rows = document.querySelectorAll('#team-edit-players .player-row');
+  const counter = document.getElementById('team-edit-counter');
+  const addBtn = document.getElementById('team-edit-add-player');
+  if(counter){ counter.textContent = `${rows.length}/${maxPlayers} jugadores`; }
+  if(addBtn){ addBtn.disabled = rows.length >= maxPlayers; }
+}
+
+function createTeamEditRow(player = {}){
+  const row = document.createElement('div');
+  row.className = 'player-row';
+  row.innerHTML = `
+    <div class="player-index">Jugador ${document.querySelectorAll('#team-edit-players .player-row').length + 1}</div>
+    <div class="field-row">
+      <div>
+        <label>Nombre completo</label>
+        <input type="text" class="p-name" placeholder="Nombre y apellido" required>
+      </div>
+      <div>
+        <label>Tipo doc.</label>
+        <select class="p-doctype">
+          ${DOC_TYPES.map(t => `<option value="${t}">${t}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label>Número doc.</label>
+        <input type="text" class="p-docnumber doc-number" placeholder="000000000" required>
+      </div>
+      <div>
+        <label>Fecha de nacimiento</label>
+        <input type="date" class="p-birthdate birth-date" required>
+      </div>
+      <button type="button" class="remove-btn" title="Quitar jugador">✕</button>
+    </div>
+  `;
+
+  row.querySelector('.p-name').value = player.name || '';
+  row.querySelector('.p-doctype').value = player.docType || DOC_TYPES[0];
+  row.querySelector('.p-docnumber').value = player.docNumber || '';
+  row.querySelector('.p-birthdate').value = player.birthDate || '';
+
+  row.querySelector('.remove-btn').addEventListener('click', () => {
+    row.remove();
+    document.querySelectorAll('#team-edit-players .player-row').forEach((item, index) => {
+      item.querySelector('.player-index').textContent = `Jugador ${index + 1}`;
+    });
+    updateTeamEditCounter();
+  });
+
+  return row;
+}
+
+function closeTeamEditor(){
+  document.getElementById('team-edit-backdrop').style.display = 'none';
+  editingTeamId = null;
+  document.getElementById('team-edit-msg').style.display = 'none';
+  document.getElementById('team-edit-msg').textContent = '';
+  document.getElementById('team-edit-players').innerHTML = '';
+}
+
+function openTeamEditor(teamId){
+  const team = currentList.find(item => item.id === teamId);
+  if(!team) return;
+
+  editingTeamId = teamId;
+  document.getElementById('team-edit-info').textContent = `Equipo: ${team.churchName}`;
+  const playersContainer = document.getElementById('team-edit-players');
+  playersContainer.innerHTML = '';
+  team.players.forEach(player => playersContainer.appendChild(createTeamEditRow(player)));
+  updateTeamEditCounter();
+  document.getElementById('team-edit-backdrop').style.display = 'block';
+}
+
+async function saveTeamEdits(){
+  if(!editingTeamId) return;
+
+  const rows = document.querySelectorAll('#team-edit-players .player-row');
+  const players = [];
+  let valid = true;
+
+  rows.forEach(row => {
+    const name = row.querySelector('.p-name').value.trim();
+    const docType = row.querySelector('.p-doctype').value;
+    const docNumber = row.querySelector('.p-docnumber').value.trim();
+    const birthDate = row.querySelector('.p-birthdate').value;
+    if(!name || !docNumber || !birthDate) valid = false;
+    players.push({ name, docType, docNumber, birthDate });
+  });
+
+  if(players.length === 0 || !valid){
+    const msg = document.getElementById('team-edit-msg');
+    msg.textContent = 'Completa todos los campos antes de guardar.';
+    msg.style.display = 'block';
+    return;
+  }
+
+  if(players.length > getMaxPlayers()){
+    const msg = document.getElementById('team-edit-msg');
+    msg.textContent = `El máximo permitido es ${getMaxPlayers()} jugadores por equipo.`;
+    msg.style.display = 'block';
+    return;
+  }
+
+  try{
+    const normalizedPlayers = players.map(({ name, docType, docNumber, birthDate }) => ({
+      name,
+      docType,
+      docNumber,
+      birthDate
+    }));
+
+    const teamIndex = currentList.findIndex(item => item.id === editingTeamId);
+    if(teamIndex !== -1){
+      currentList[teamIndex] = { ...currentList[teamIndex], players: normalizedPlayers };
+      renderTeams(currentList);
+    }
+
+    await db.collection(TEAMS_COLLECTION).doc(editingTeamId).update({ players: normalizedPlayers });
+    closeTeamEditor();
+  } catch(err){
+    console.error('Error guardando cambios del equipo:', err);
+    const msg = document.getElementById('team-edit-msg');
+    msg.textContent = 'No se pudieron guardar los cambios del equipo.';
+    msg.style.display = 'block';
+  }
+}
+
 async function handleAdminAction(id, action){
   try{
     if(action === 'delete'){
       if(!confirm('¿Eliminar este equipo del registro? Esta acción no se puede deshacer.')) return;
       await db.collection(TEAMS_COLLECTION).doc(id).delete();
+    } else if(action === 'edit'){
+      openTeamEditor(id);
     } else {
       await db.collection(TEAMS_COLLECTION).doc(id).update({ paid: action === 'paid' });
     }
@@ -714,7 +886,43 @@ document.getElementById('admin-pass').addEventListener('keydown', (e) => {
   if(e.key === 'Enter') document.getElementById('admin-confirm').click();
 });
 
+document.getElementById('team-edit-add-player').addEventListener('click', () => {
+  const playersContainer = document.getElementById('team-edit-players');
+  const maxPlayers = getMaxPlayers();
+  if(playersContainer.querySelectorAll('.player-row').length >= maxPlayers) return;
+  playersContainer.appendChild(createTeamEditRow());
+  updateTeamEditCounter();
+});
+
+document.getElementById('team-edit-cancel').addEventListener('click', closeTeamEditor);
+document.getElementById('team-edit-save').addEventListener('click', saveTeamEdits);
+document.getElementById('max-players-save').addEventListener('click', () => {
+  const value = document.getElementById('max-players-admin').value;
+  const safeValue = setMaxPlayers(value);
+  document.getElementById('max-players-admin').value = safeValue;
+  updateAddButtonState();
+  updateTeamEditCounter();
+  renderTeams(currentList);
+});
+
+document.getElementById('max-players-admin').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') document.getElementById('max-players-save').click();
+});
+
+document.getElementById('team-edit-backdrop').addEventListener('click', (e) => {
+  if(e.target === document.getElementById('team-edit-backdrop')) closeTeamEditor();
+});
+
+function syncAdminControls(){
+  const banner = document.getElementById('admin-banner');
+  const maxPlayersInput = document.getElementById('max-players-admin');
+  if(!banner || !maxPlayersInput) return;
+  banner.style.display = isAdmin ? 'block' : 'none';
+  maxPlayersInput.value = getMaxPlayers();
+}
+
 syncAdminVisibility();
+syncAdminControls();
 subscribeToTeams();
 </script>
 
