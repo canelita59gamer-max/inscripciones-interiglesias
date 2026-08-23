@@ -876,6 +876,7 @@ document.getElementById('admin-confirm').addEventListener('click', () => {
     organizerBtn.classList.add('active');
     modalBackdrop.classList.remove('show');
     syncAdminVisibility();
+    syncAdminControls();
     renderTeams(currentList);
   } else {
     adminErr.style.display = 'block';
