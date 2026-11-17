@@ -33,12 +33,22 @@
       if (isOpen() && state.step === 0) render();
     }, err => console.warn('No se pudieron leer los cupos', err));
     // Regalos y ranking en vivo (los actualiza el organizador desde el panel)
-    db.collection('fc26_config').doc('estado').onSnapshot(s => {
-      const d = s.data(); if (!d) return;
-      C.donaciones.regalos = d.regalos || 0;
-      C.donaciones.ranking = Array.isArray(d.ranking) ? d.ranking : [];
+    // Total = regalos que anota el organizador (equipos + sin registro) + regalos registrados por QR
+    let base = 0, qr = 0;
+    const push = () => {
+      C.donaciones.regalos = base + qr;
       window.FCApp && window.FCApp.refreshDonaciones && window.FCApp.refreshDonaciones();
+    };
+    db.collection('fc26_config').doc('estado').onSnapshot(s => {
+      const d = s.data() || {};
+      base = d.regalos || 0;
+      C.donaciones.ranking = Array.isArray(d.ranking) ? d.ranking : [];
+      push();
     }, err => console.warn('No se pudieron leer los regalos', err));
+    db.collection('fc26_regalos').onSnapshot(s => {
+      qr = 0; s.forEach(d => { qr += Number(d.data().cantidad) || 0; });
+      push();
+    }, err => console.warn('No se pudieron leer los regalos por QR', err));
   }
 
   /* ---------------- Estado ---------------- */

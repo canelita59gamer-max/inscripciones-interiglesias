@@ -45,9 +45,20 @@
   <main class="wrap">
     <section class="kpis" id="kpis" aria-label="Resumen"></section>
 
+    <details class="guide" id="guide">
+      <summary>¿Cómo funciona este panel?</summary>
+      <ol>
+        <li><b>Equipos:</b> cada iglesia que se inscribe en la página aparece aquí sola. Toca <b>WhatsApp</b> para escribirle al responsable con el mensaje del pago listo.</li>
+        <li>Cuando te paguen, toca <b>Sin pagar</b> y pasa a <b>Pagado</b>: el equipo queda confirmado. Si un equipo no va, ponlo en <b>Rechazado</b> y se libera su cupo.</li>
+        <li><b>Ver jugadores</b> muestra documentos y edades; en rojo, los que no entran en la categoría.</li>
+        <li><b>Donaciones:</b> imprime el cartel con el QR y ponlo en la caja de regalos. Quien dona lo escanea, se registra y entra al sorteo solo. Si alguien no tiene celular, lo agregas tú a mano.</li>
+        <li>El día de la premiación, en <b>Donaciones → Sortear</b>, sale el ganador del Gol Navideño. Cada regalo es una oportunidad.</li>
+      </ol>
+    </details>
+
     <nav class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-tab="equipos">Equipos</button>
-      <button role="tab" aria-selected="false" data-tab="regalos">Regalos</button>
+      <button role="tab" aria-selected="false" data-tab="regalos">Donaciones y sorteo</button>
     </nav>
 
     <!-- Equipos -->
@@ -64,23 +75,84 @@
 
     <!-- Regalos -->
     <section class="tab" id="tab-regalos" hidden>
-      <div class="gift-panel">
-        <div class="gift-total"><span id="g-total">0</span><small>regalos en total · se ve en la página en vivo</small></div>
-        <div class="gift-row">
-          <div>
-            <b>Regalos del público</b>
-            <small>Los que llegan al punto de donación, sin equipo.</small>
+      <div class="don">
+        <div class="don__top">
+          <div class="gift-total">
+            <span id="g-total">0</span><small>regalos en total · se ve en la página en vivo</small>
+            <div class="gift-split" id="g-split"></div>
           </div>
-          <div class="stepper" data-step="publico">
-            <button type="button" data-d="-1" aria-label="Restar">−</button>
-            <input type="number" min="0" id="g-publico" value="0" inputmode="numeric">
-            <button type="button" data-d="1" aria-label="Sumar">+</button>
+          <button class="draw-btn" id="btn-draw" type="button">🎟️ Sortear Gol Navideño</button>
+        </div>
+
+        <div class="don__grid">
+          <!-- QR -->
+          <div class="panel qr">
+            <h3>QR de la caja de regalos</h3>
+            <p class="muted small">Imprímelo y pégalo en el punto de donación. Quien lo escanea registra su regalo y entra al sorteo.</p>
+            <div class="qr__box" id="qr"></div>
+            <div class="qr__btns">
+              <button class="chip" id="qr-print" type="button">Imprimir cartel</button>
+              <button class="chip" id="qr-copy" type="button">Copiar link</button>
+              <button class="chip danger" id="qr-new" type="button">Cambiar código</button>
+            </div>
+          </div>
+
+          <!-- Agregar a mano -->
+          <form class="panel add" id="add">
+            <h3>Agregar a mano</h3>
+            <p class="muted small">Para quien no tiene celular. También entra al sorteo.</p>
+            <input id="a-nombre" placeholder="Nombre" maxlength="80" required>
+            <input id="a-tel" placeholder="WhatsApp (opcional)" maxlength="20" inputmode="tel">
+            <div class="add__row">
+              <div class="stepper" data-step="add"><button type="button" data-d="-1" aria-label="Uno menos">−</button><span id="a-cant">1</span><button type="button" data-d="1" aria-label="Uno más">+</button></div>
+              <select id="a-iglesia"><option value="">Sin equipo</option></select>
+            </div>
+            <button class="btn btn--lime btn--block" type="submit">Agregar donación</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head">
+            <h3>Donantes <i id="d-count"></i></h3>
+            <input class="search" id="d-search" type="search" placeholder="Buscar nombre o código">
+          </div>
+          <div class="donors" id="donors"></div>
+        </div>
+
+        <div class="don__grid">
+          <div class="panel">
+            <h3>Ranking Corazón Navideño</h3>
+            <ol class="rank" id="rank"></ol>
+          </div>
+          <div class="panel">
+            <h3>Regalos sin registro</h3>
+            <p class="muted small">Regalos que llegaron sin que nadie se registrara. Suman al total, pero no participan en el sorteo.</p>
+            <div class="stepper" data-step="publico">
+              <button type="button" data-d="-1" aria-label="Restar">−</button>
+              <input type="number" min="0" id="g-publico" value="0" inputmode="numeric">
+              <button type="button" data-d="1" aria-label="Sumar">+</button>
+            </div>
           </div>
         </div>
-        <p class="muted small">Los regalos de cada equipo se anotan en la pestaña Equipos. El ranking del Corazón Navideño se arma solo.</p>
-        <ol class="rank" id="rank"></ol>
       </div>
     </section>
+
+    <!-- Sorteo -->
+    <div class="draw" id="draw" hidden>
+      <button class="draw__close" id="draw-close" type="button" aria-label="Cerrar sorteo">✕</button>
+      <p class="draw__k">Sorteo del Gol Navideño</p>
+      <div class="draw__slot"><span id="draw-name">¿Quién ganará?</span><small id="draw-code"></small></div>
+      <p class="draw__info" id="draw-info"></p>
+      <div class="draw__opts">
+        <label><input type="checkbox" id="draw-norepeat" checked> No repetir ganadores</label>
+        <input id="draw-premio" placeholder="Premio (ej. balón Arena Sports)" maxlength="60">
+      </div>
+      <div class="draw__btns">
+        <button class="btn btn--lime" id="draw-go" type="button">¡Sortear!</button>
+        <button class="btn btn--ghost" id="draw-save" type="button" hidden>Guardar ganador</button>
+      </div>
+      <ol class="draw__winners" id="draw-winners"></ol>
+    </div>
   </main>
 </div>
 
@@ -89,6 +161,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="../js/config.js"></script>
 <script src="admin.js"></script>
 </body>

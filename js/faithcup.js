@@ -467,8 +467,8 @@
   /* =========================================================
      NAVEGACIÓN ENTRE VISTAS (tipo app)
      ========================================================= */
-  const ORDER = ['inicio', 'categorias', 'premios', 'agenda', 'navidad'];
-  const LABEL = { inicio: 'Inicio', categorias: 'Categorías', premios: 'Premios', agenda: 'Agenda', navidad: 'Misión' };
+  const ORDER = ['inicio', 'categorias', 'premios', 'agenda', 'navidad', 'redes'];
+  const LABEL = { inicio: 'Inicio', categorias: 'Categorías', premios: 'Premios', agenda: 'Agenda', navidad: 'Misión', redes: 'Síguenos' };
   let current = 'inicio', busy = false;
   const scenes = {};
 
@@ -516,6 +516,7 @@
     gsap.fromTo(items, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .7, ease: 'power3.out', stagger: .05, delay: .25 });
     if (name === 'navidad') { lightTree(); missionIntro(false); }
     if (name === 'categorias') coverflowUpdate();
+    if (name === 'redes' && hasGsap) gsap.fromTo('.red', { y: 50, rotationX: -35, opacity: 0 }, { y: 0, rotationX: 0, opacity: 1, duration: .8, stagger: .1, ease: 'expo.out', delay: .3, clearProps: 'transform' });
   }
   function router() {
     document.addEventListener('click', e => {
@@ -636,7 +637,7 @@
           <li data-i="🎁"><b>5 regalos por equipo</b>, al inscribirse o antes del primer partido.</li>
           <li data-i="🧸">Juguete nuevo o ropa en buen estado.</li>
           <li data-i="📍">Punto de donación abierto al público en todos los partidos.</li>
-          <li data-i="🎟️">Quien done entra al <b>sorteo del Gol Navideño</b>.</li>
+          <li data-i="📱">En la caja hay un <b>código QR</b>: lo escaneas, registras tu regalo y entras solo al <b>sorteo del Gol Navideño</b>. Cada regalo es una oportunidad.</li>
           <li data-i="❤️">Premio <b>Corazón Navideño</b> al equipo que más done.</li>
         </ul>
         <a class="btn btn--wa js-wa" href="#" data-msg="Hola, quiero donar regalos para la Faith Cup Navideña 2026.">Quiero donar</a>`;
@@ -785,6 +786,23 @@
     youtube: '<svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.2v5.6l4.8-2.8z" class="f"/></svg>',
     facebook: '<svg viewBox="0 0 24 24"><path d="M14.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H9v3h2.7V21"/></svg>'
   };
+  function renderRedes() {
+    const el = $('#redes'); if (!el || !C.redes) return;
+    el.innerHTML = C.redes.map(r => `<a class="red social--${r.id}" href="${esc(r.url)}" target="_blank" rel="noopener">
+      <span class="red__glow" aria-hidden="true"></span>
+      <span class="red__ico">${SOCIAL[r.id]}</span>
+      <span class="red__txt"><b>${esc(r.nombre)}</b><small>${esc(r.usuario)}</small><i>${esc(r.texto)}</i></span>
+      <span class="red__go">Seguir</span>
+    </a>`).join('');
+    // inclinación 3D al pasar el dedo o el mouse
+    $$('.red', el).forEach(card => {
+      card.addEventListener('pointermove', e => {
+        const b = card.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
+        card.style.transform = `perspective(700px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateZ(0)`;
+      });
+      card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+    });
+  }
   function renderFollow() {
     const el = $('#follow'); if (!el || !C.redes) return;
     el.innerHTML = `<span class="follow__lbl">Síguenos</span>${C.redes.map(r => `<a class="follow__btn social--${r.id}" href="${esc(r.url)}" target="_blank" rel="noopener" aria-label="${esc(r.nombre)} ${esc(r.usuario)}">${SOCIAL[r.id]}</a>`).join('')}`;
@@ -1036,7 +1054,7 @@
         categories(true); cf.scrollLeft = x; coverflowUpdate(); renderLive();
       }
     };
-    renderLive(); renderFollow();
+    renderLive(); renderFollow(); renderRedes();
     router();
     intro();
     if (current !== 'inicio') enterAnim(current);

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Registra tu regalo · Faith Cup Navideña</title>
+<meta name="theme-color" content="#050707">
+<link rel="icon" href="../assets/faith-cup-logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="donar.css">
+</head>
+<body>
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<main class="page">
+  <header class="hero">
+    <img class="hero__logo" src="../assets/logo-arena.png" alt="Arena Sports" width="608" height="427">
+    <p class="kicker">Misión Navidad · Faith Cup</p>
+    <h1 class="hero__title">Gracias por tu <em>regalo</em></h1>
+    <p class="hero__lead">Regístralo aquí y entras al <b>sorteo del Gol Navideño</b>. Cada regalo es una oportunidad más de ganar.</p>
+  </header>
+
+  <!-- Formulario -->
+  <section class="card" id="form-card">
+    <form id="form" novalidate>
+      <label class="field"><span>Tu nombre</span><input id="f-nombre" type="text" maxlength="80" placeholder="Nombre y apellido" autocomplete="name" required></label>
+      <label class="field"><span>Tu WhatsApp <small>(te avisamos si ganas)</small></span><input id="f-tel" type="tel" maxlength="20" inputmode="tel" placeholder="300 000 0000" autocomplete="tel" required></label>
+
+      <div class="field">
+        <span>¿Cuántos regalos trajiste?</span>
+        <div class="count">
+          <button type="button" data-d="-1" aria-label="Uno menos">−</button>
+          <output id="f-cant">1</output>
+          <button type="button" data-d="1" aria-label="Uno más">+</button>
+        </div>
+        <p class="hint" id="f-chances">1 oportunidad en el sorteo</p>
+      </div>
+
+      <div class="field">
+        <span>¿Qué regalaste?</span>
+        <div class="seg" role="radiogroup" id="f-tipo">
+          <button type="button" role="radio" aria-checked="true" data-v="juguete">🧸 Juguete</button>
+          <button type="button" role="radio" aria-checked="false" data-v="ropa">👕 Ropa</button>
+          <button type="button" role="radio" aria-checked="false" data-v="otro">🎁 Otro</button>
+        </div>
+      </div>
+
+      <label class="field"><span>¿Apoyas a algún equipo? <small>(suma para su Corazón Navideño)</small></span>
+        <select id="f-iglesia"><option value="">No, vengo por mi cuenta</option></select>
+      </label>
+
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn" id="send" type="submit">Registrar mi regalo</button>
+    </form>
+  </section>
+
+  <!-- Listo -->
+  <section class="card done" id="done" hidden>
+    <div class="ticket">
+      <p class="ticket__k">Sorteo del Gol Navideño</p>
+      <p class="ticket__name" id="t-name"></p>
+      <div class="ticket__row">
+        <div><small>Tu código</small><b id="t-code"></b></div>
+        <div><small>Oportunidades</small><b id="t-chances"></b></div>
+      </div>
+      <div class="ticket__cut" aria-hidden="true"></div>
+      <p class="ticket__foot">🎄 El sorteo es en la premiación · domingo 13 de diciembre, 7:00 pm</p>
+    </div>
+    <p class="done__tip">Toma captura de tu código. Si ganas te escribimos al WhatsApp.</p>
+    <button class="btn btn--ghost" id="again" type="button">Registrar otro regalo</button>
+  </section>
+
+  <!-- Bloqueado (sin el código del QR) -->
+  <section class="card" id="locked" hidden>
+    <p class="locked__ico" aria-hidden="true">📷</p>
+    <h2 class="locked__t">Escanea el QR de la caja</h2>
+    <p class="muted">Para registrar tu regalo, escanea el código QR que está en el punto de donación del torneo.</p>
+  </section>
+
+  <!-- Redes -->
+  <section class="follow">
+    <h2 class="follow__t">Síguenos y entérate <em>si ganaste</em></h2>
+    <div class="redes" id="redes"></div>
+    <a class="back" href="../">Ver la página del torneo →</a>
+  </section>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="../js/config.js"></script>
+<script src="donar.js"></script>
+</body>
+</html>
