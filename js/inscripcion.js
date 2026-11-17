@@ -31,6 +31,13 @@
       window.FCApp && window.FCApp.refreshCupos();
       if (isOpen() && state.step === 0) render();
     }, err => console.warn('No se pudieron leer los cupos', err));
+    // Regalos y ranking en vivo (los actualiza el organizador desde el panel)
+    db.collection('fc26_config').doc('estado').onSnapshot(s => {
+      const d = s.data(); if (!d) return;
+      C.donaciones.regalos = d.regalos || 0;
+      C.donaciones.ranking = Array.isArray(d.ranking) ? d.ranking : [];
+      window.FCApp && window.FCApp.refreshDonaciones && window.FCApp.refreshDonaciones();
+    }, err => console.warn('No se pudieron leer los regalos', err));
   }
 
   /* ---------------- Estado ---------------- */

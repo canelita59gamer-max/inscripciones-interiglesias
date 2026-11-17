@@ -984,6 +984,10 @@
     window.FCApp = {
       closeSheet,
       // la inscripción avisa cuando cambian los cupos
+      refreshDonaciones() {
+        navidad();
+        if (current === 'navidad') lightTree();
+      },
       refreshCupos() {
         const cf = $('#coverflow'), x = cf.scrollLeft;
         categories(true); cf.scrollLeft = x; coverflowUpdate();
