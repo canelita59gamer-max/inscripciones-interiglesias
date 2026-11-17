@@ -13,6 +13,14 @@ window.FAITHCUP = {
   whatsapp: '573222462392',
   instagram: 'arenasportsco_',
 
+  // Redes sociales de Arena Sports
+  redes: [
+    { id: 'instagram', nombre: 'Instagram', usuario: '@arenasportsco_', url: 'https://www.instagram.com/arenasportsco_/', texto: 'Fotos, historias y resultados del día' },
+    { id: 'tiktok', nombre: 'TikTok', usuario: '@arenasportsco_', url: 'https://www.tiktok.com/@arenasportsco_', texto: 'Los mejores goles y momentos' },
+    { id: 'youtube', nombre: 'YouTube', usuario: '@ArenaSportsCo', url: 'https://www.youtube.com/@ArenaSportsCo', texto: 'Resúmenes y partidos completos' },
+    { id: 'facebook', nombre: 'Facebook', usuario: 'Arena Sports', url: 'https://www.facebook.com/share/19YH5N7aiq/', texto: 'Noticias y transmisiones' }
+  ],
+
   // Fechas clave (hora Colombia, UTC-5)
   fechas: {
     abreInscripcion: '2026-11-23T00:00:00-05:00',
@@ -30,7 +38,7 @@ window.FAITHCUP = {
     preinscripcion: true,
     tiposDoc: ['CC', 'TI', 'RC', 'Otro'],
     firebase: {
-      apiKey: 'AIzaSyDkoBlrMc12TOCOe0LSg5kb2ZO6iNdW8Wo',
+      apiKey: 'AIzaSyDkoBlrMc12TOCOe0lSg5kb2ZO6iNdW8Wo',
       authDomain: 'torneo-interiglesias.firebaseapp.com',
       projectId: 'torneo-interiglesias',
       storageBucket: 'torneo-interiglesias.firebasestorage.app',

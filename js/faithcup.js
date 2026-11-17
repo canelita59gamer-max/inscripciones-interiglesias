@@ -604,12 +604,13 @@
           <div class="gold"><small>Inscripción</small><b>${money(c.inscripcion)}</b></div>
           <div class="gold"><small>Campeón</small><b>${premio}</b></div>
           <div><small>Cancha</small><b>${esc(c.cancha)}</b></div>
-          <div><small>Cupos</small><b>${c.inscritos} de ${c.maxEquipos}</b></div>
+          <div><small>Inscritos</small><b>${c.inscritos} de ${c.maxEquipos}</b></div>
           <div class="wide"><small>Cuándo juega</small><b>${esc(c.cuando)}</b></div>
           <div class="wide"><small>Equipo</small><b>${esc(c.jugadores)}</b></div>
           <div class="wide"><small>Partidos</small><b>${esc(c.partido)}</b></div>
           <div class="wide"><small>Para abrir</small><b>Mínimo ${c.minEquipos} equipos · máximo ${c.maxEquipos}</b></div>
         </div>
+        ${cuposBlock(c)}
         <button class="btn btn--glass btn--block" type="button" data-go="premios" data-close data-cat="${c.id}" style="margin-bottom:8px">Ver cómo cambia el premio</button>
         <button class="btn btn--lime btn--block" type="button" data-reg="${c.id}">Inscribir equipo en ${esc(c.nombre)}</button>`;
     },
@@ -655,9 +656,22 @@
           <li data-i="📸">Foto final con todas las donaciones.</li>
         </ul>`;
     },
+    redes() {
+      return `<h3 id="sheet-title">Síguenos</h3><p class="sub">Ahí publicamos los grupos, los resultados de cada día, los goles y la entrega de regalos.</p>
+        <div class="socials">${C.redes.map(r => `<a class="social social--${r.id}" href="${esc(r.url)}" target="_blank" rel="noopener">
+          <span class="social__ico">${SOCIAL[r.id]}</span><span class="social__txt"><b>${esc(r.nombre)}</b><small>${esc(r.usuario)} · ${esc(r.texto)}</small></span><span class="social__go">Seguir</span></a>`).join('')}</div>`;
+    },
+    inscritos() {
+      const total = C.categorias.reduce((n, c) => n + c.inscritos, 0);
+      return `<h3 id="sheet-title">Inscritos</h3><p class="sub">${total ? `${total} ${total === 1 ? 'equipo ya está' : 'equipos ya están'} dentro. Se actualiza en vivo.` : 'Todavía no hay equipos. ¡Sé el primero!'}</p>
+        ${C.categorias.map(c => `<div class="cupo-cat"><p class="cupo-cat__t"><b>${esc(c.nombre)}</b><span>${c.inscritos}/${c.maxEquipos}</span></p>${cuposBlock(c, true)}</div>`).join('')}
+        <button class="btn btn--lime btn--block" type="button" data-reg="">Inscribir mi iglesia</button>`;
+    },
     mas() {
       return `<h3 id="sheet-title">Más</h3><p class="sub">Todo lo demás del torneo.</p>
         <div class="menu">
+          <button type="button" data-sheet="redes"><span>📲</span>Síguenos<small>Instagram, TikTok, YouTube</small></button>
+          <button type="button" data-sheet="inscritos"><span>⛪</span>Inscritos<small>Quiénes ya están</small></button>
           <button type="button" data-sheet="reglamento"><span>📋</span>Reglamento<small>Las reglas claras</small></button>
           <button type="button" data-sheet="faq"><span>❓</span>Preguntas<small>Lo que siempre preguntan</small></button>
           <button type="button" data-sheet="causa"><span>🎁</span>Misión Navidad<small>Regalos para niños</small></button>
@@ -747,6 +761,34 @@
     return { cls: 'closed', txt: 'Cerrada' };
   }
   const THEME = { mini: 'c-mini', pre: 'c-pre', juvenil: 'c-juvenil', libre: 'c-libre', voley: 'c-voley' };
+  // Barra de cupos + nombres de las iglesias inscritas
+  function cuposBlock(c, compact) {
+    const names = c.iglesias || [];
+    const slots = Array.from({ length: c.maxEquipos }, (_, i) => `<i class="${i < c.inscritos ? 'on' : ''} ${i < c.minEquipos ? 'min' : ''}"></i>`).join('');
+    return `<div class="cupos ${compact ? 'cupos--sm' : ''}">
+      ${compact ? '' : `<p class="cupos__t">Equipos inscritos <b>${c.inscritos}/${c.maxEquipos}</b></p>`}
+      <div class="cupos__slots" title="Las rayas marcadas son el mínimo para abrir">${slots}</div>
+      ${names.length ? `<div class="cupos__names">${names.map(n => `<span>⛪ ${esc(n)}</span>`).join('')}</div>` : `<p class="cupos__empty">Aún no hay equipos. Faltan ${c.minEquipos} para abrir.</p>`}
+    </div>`;
+  }
+  function renderLive() {
+    const el = $('#live'); if (!el) return;
+    const total = C.categorias.reduce((n, c) => n + c.inscritos, 0);
+    const names = C.categorias.flatMap(c => (c.iglesias || []).map(n => `${n} · ${c.nombre}`));
+    el.innerHTML = total
+      ? `<span class="live__dot"></span><b>${total}</b> ${total === 1 ? 'equipo inscrito' : 'equipos inscritos'}<span class="live__names"><span class="live__track">${names.concat(names).map(n => `<i>${esc(n)}</i>`).join('')}</span></span><span class="live__go">Ver ›</span>`
+      : `<span class="live__dot"></span>Inscripciones abiertas · <b>sé el primer equipo</b><span class="live__go">Ver ›</span>`;
+  }
+  const SOCIAL = {
+    instagram: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" class="f"/></svg>',
+    tiktok: '<svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.5 2.8 2.3 4.5 5 4.8"/></svg>',
+    youtube: '<svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.2v5.6l4.8-2.8z" class="f"/></svg>',
+    facebook: '<svg viewBox="0 0 24 24"><path d="M14.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H9v3h2.7V21"/></svg>'
+  };
+  function renderFollow() {
+    const el = $('#follow'); if (!el || !C.redes) return;
+    el.innerHTML = `<span class="follow__lbl">Síguenos</span>${C.redes.map(r => `<a class="follow__btn social--${r.id}" href="${esc(r.url)}" target="_blank" rel="noopener" aria-label="${esc(r.nombre)} ${esc(r.usuario)}">${SOCIAL[r.id]}</a>`).join('')}`;
+  }
   function categories(refresh) {
     const cf = $('#coverflow');
     cf.innerHTML = C.categorias.map(c => {
@@ -759,6 +801,7 @@
           <h3 class="ccard__name">${esc(c.nombre)}</h3>
           <p class="ccard__age">${esc(c.edad)}</p>
           <div class="ccard__chips"><span>${esc(c.cancha)}</span><span>${esc(c.cuando.split(' + ')[0])}</span></div>
+          <div class="ccard__cupo"><span><b>${c.inscritos}</b> de ${c.maxEquipos} equipos</span><div class="bar"><i style="width:${Math.min(100, c.inscritos / c.maxEquipos * 100)}%"></i></div></div>
           <div class="ccard__foot">
             <div class="ccard__prize"><small>Campeón${c.premio.tipo === 'dinero' ? ' · hasta' : ''}</small><b>${premio}</b></div>
             <span class="ccard__open" aria-hidden="true">+</span>
@@ -990,9 +1033,10 @@
       },
       refreshCupos() {
         const cf = $('#coverflow'), x = cf.scrollLeft;
-        categories(true); cf.scrollLeft = x; coverflowUpdate();
+        categories(true); cf.scrollLeft = x; coverflowUpdate(); renderLive();
       }
     };
+    renderLive(); renderFollow();
     router();
     intro();
     if (current !== 'inicio') enterAnim(current);

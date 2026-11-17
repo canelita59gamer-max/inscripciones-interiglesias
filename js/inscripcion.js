@@ -25,9 +25,10 @@
   function listenCupos() {
     if (!db) return;
     db.collection(R.coleccionPublica).onSnapshot(snap => {
-      const count = {};
-      snap.forEach(d => { const c = d.data().categoria; count[c] = (count[c] || 0) + 1; });
-      C.categorias.forEach(c => { c.inscritos = count[c.id] || 0; });
+      const count = {}, names = {};
+      const docs = snap.docs.map(d => d.data()).sort((a, b) => (a.creado?.seconds || 0) - (b.creado?.seconds || 0));
+      docs.forEach(d => { count[d.categoria] = (count[d.categoria] || 0) + 1; (names[d.categoria] = names[d.categoria] || []).push(d.iglesia); });
+      C.categorias.forEach(c => { c.inscritos = count[c.id] || 0; c.iglesias = names[c.id] || []; });
       window.FCApp && window.FCApp.refreshCupos();
       if (isOpen() && state.step === 0) render();
     }, err => console.warn('No se pudieron leer los cupos', err));
