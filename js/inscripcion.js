@@ -87,7 +87,7 @@
   /* ---------------- Fases ---------------- */
   function abierta() {
     const now = new Date(), abre = new Date(C.fechas.abreInscripcion), cierra = new Date(C.fechas.cierraInscripcion);
-    if (now > cierra) return { ok: false, txt: 'Las inscripciones cerraron el 6 de diciembre.' };
+    if (now > cierra) return { ok: false, txt: 'Las inscripciones cerraron el 13 de diciembre.' };
     if (now < abre && !R.preinscripcion) return { ok: false, txt: 'Las inscripciones abren el lunes 23 de noviembre.' };
     return { ok: true, pre: now < abre };
   }
@@ -257,7 +257,7 @@
         <div class="ticket__grid">
           <div><small>Categoría</small><b>${esc(c.nombre)}</b></div>
           <div><small>Jugadores</small><b>${d.jugadores}</b></div>
-          <div><small>Fechas</small><b>9 – 13 dic</b></div>
+          <div><small>Fechas</small><b>16 – 20 dic</b></div>
           <div><small>Estado</small><b class="pend">Pendiente de pago</b></div>
         </div>
         <div class="ticket__cut" aria-hidden="true"></div>
