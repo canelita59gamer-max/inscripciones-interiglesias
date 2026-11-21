@@ -571,7 +571,7 @@
     inscripcion() {
       const t = {
         antes: 'Las inscripciones abren el <b>lunes 23 de noviembre</b>. Separa ya el cupo de tu iglesia.',
-        abiertas: '¡Abiertas hasta el <b>13 de diciembre</b>!',
+        abiertas: '¡Abiertas hasta el <b>6 de diciembre</b>!',
         cerradas: 'Las inscripciones cerraron. Puedes venir a ver los partidos y donar regalos.',
         enJuego: 'El torneo está en juego. Las inscripciones ya cerraron.',
         terminado: 'Esta edición terminó. ¡Gracias por jugar por una Navidad!'
@@ -619,7 +619,7 @@
       const { cat, n } = prizeState;
       const abre = n >= cat.minEquipos;
       let body;
-      if (!abre) body = `<div class="grp"><p>No abre</p>Faltan ${cat.minEquipos - n} equipo(s). Si al 13 de diciembre no se llega al mínimo, se devuelve la inscripción.</div>`;
+      if (!abre) body = `<div class="grp"><p>No abre</p>Faltan ${cat.minEquipos - n} equipo(s). Si al 6 de diciembre no se llega al mínimo, se devuelve la inscripción.</div>`;
       else if (n === 8) {
         const g = (L) => `<div class="grp"><p>Grupo ${L}</p><div>${[1, 2, 3, 4].map(i => `<span class="tm ${i < 3 ? 'q' : ''}">${L}${i}</span>`).join('')}</div></div>`;
         body = `${g('A')}${g('B')}<p class="arrow">↓ pasan los 2 primeros ↓</p><div class="ko"><span>1A vs 2B</span><span>1B vs 2A</span></div><div class="ko"><span>3er puesto</span><span class="f">🏆 Final</span></div>`;
@@ -677,7 +677,7 @@
           <button type="button" data-sheet="faq"><span>❓</span>Preguntas<small>Lo que siempre preguntan</small></button>
           <button type="button" data-sheet="causa"><span>🎁</span>Misión Navidad<small>Regalos para niños</small></button>
           <button type="button" data-sheet="patrocinar"><span>🤝</span>Patrocinar<small>Tu marca en la valla</small></button>
-          ${C.linkEnVivo ? `<a href="${esc(C.linkEnVivo)}" target="_blank" rel="noopener"><span>📺</span>En vivo<small>Grupos y resultados</small></a>` : `<button type="button" disabled style="opacity:.55"><span>📺</span>En vivo<small>Se activa el 16 de dic</small></button>`}
+          ${C.linkEnVivo ? `<a href="${esc(C.linkEnVivo)}" target="_blank" rel="noopener"><span>📺</span>En vivo<small>Grupos y resultados</small></a>` : `<button type="button" disabled style="opacity:.55"><span>📺</span>En vivo<small>Se activa el 9 de dic</small></button>`}
           <button type="button" data-sheet="whatsapp"><span>💬</span>WhatsApp<small>Escríbenos</small></button>
         </div>`;
     },
@@ -928,7 +928,7 @@
      ========================================================= */
   function agenda() {
     const days = $('#days'), box = $('#agenda');
-    const short = { semana: ['Mié–Vie', '16 · 17 · 18 dic'], sabado: ['Sábado', '19 dic'], domingo: ['Domingo', '20 dic · Final'] };
+    const short = { semana: ['Mié–Vie', '9 · 10 · 11 dic'], sabado: ['Sábado', '12 dic'], domingo: ['Domingo', '13 dic · Final'] };
     days.innerHTML = C.calendario.map((d, i) => `<button class="day" type="button" role="tab" aria-selected="${i === 0}" data-i="${i}"><b>${short[d.id] ? short[d.id][0] : esc(d.etiqueta)}</b><small>${short[d.id] ? short[d.id][1] : ''}</small></button>`).join('');
     function show(i, animate) {
       const d = C.calendario[i];
@@ -949,7 +949,7 @@
     });
     // por defecto, el día del torneo que toca (o el primero)
     const now = new Date(), day = now.getDate(), month = now.getMonth();
-    show(month === 11 && day === 19 ? 1 : month === 11 && day === 20 ? 2 : 0, false);
+    show(month === 11 && day === 12 ? 1 : month === 11 && day === 13 ? 2 : 0, false);
   }
 
   /* =========================================================

@@ -24,9 +24,9 @@ window.FAITHCUP = {
   // Fechas clave (hora Colombia, UTC-5)
   fechas: {
     abreInscripcion: '2026-11-23T00:00:00-05:00',
-    cierraInscripcion: '2026-12-13T23:59:00-05:00',
-    inicioTorneo: '2026-12-16T18:00:00-05:00',
-    finTorneo: '2026-12-20T19:30:00-05:00'
+    cierraInscripcion: '2026-12-06T23:59:00-05:00',
+    inicioTorneo: '2026-12-09T18:00:00-05:00',
+    finTorneo: '2026-12-13T19:30:00-05:00'
   },
 
   // Link a la sección "Torneo en vivo" de la web de Arena Sports.
@@ -125,7 +125,7 @@ window.FAITHCUP = {
 
   calendario: [
     {
-      id: 'semana', etiqueta: 'Mié 16 · Jue 17 · Vie 18', titulo: 'Noches de adultos', horario: '6:00 – 8:30 pm',
+      id: 'semana', etiqueta: 'Mié 9 · Jue 10 · Vie 11', titulo: 'Noches de adultos', horario: '6:00 – 8:30 pm',
       canchas: [
         { nombre: 'Cancha de fútbol 5', items: [
           { hora: '6:00 pm', texto: 'Libre · fase de grupos', detalle: 'Partidos a las 6:00, 6:35, 7:10 y 7:45. Mié fecha 1, jue fecha 2, vie fecha 3.' }
@@ -136,7 +136,7 @@ window.FAITHCUP = {
       ]
     },
     {
-      id: 'sabado', etiqueta: 'Sábado 19', titulo: 'Día de niños y juveniles', horario: '8:00 am – 8:40 pm',
+      id: 'sabado', etiqueta: 'Sábado 12', titulo: 'Día de niños y juveniles', horario: '8:00 am – 8:40 pm',
       canchas: [
         { nombre: 'Cancha de fútbol 5', items: [
           { hora: '8:00 am', texto: 'Juvenil · fase de grupos', detalle: '12 partidos, cada equipo juega 3.' },
@@ -151,7 +151,7 @@ window.FAITHCUP = {
       ]
     },
     {
-      id: 'domingo', etiqueta: 'Domingo 20', titulo: 'Gran Final Navideña', horario: 'Desde la 1:00 pm',
+      id: 'domingo', etiqueta: 'Domingo 13', titulo: 'Gran Final Navideña', horario: 'Desde la 1:00 pm',
       canchas: [
         { nombre: 'Polideportiva', items: [
           { hora: '1:00 pm', texto: 'Mini · semis, 3er puesto y final', detalle: 'Semis 1:00 y 1:25 · 3er puesto 1:50 · final 2:15' },
@@ -202,7 +202,7 @@ window.FAITHCUP = {
     ] },
     { titulo: 'Para todos', items: [
       'La edad se cuenta por año de nacimiento y se verifica con documento.',
-      'Las plantillas se cierran el 13 de diciembre; no se agregan jugadores después.',
+      'Las plantillas se cierran el 6 de diciembre; no se agregan jugadores después.',
       'Cada equipo entrega mínimo 5 regalos al inscribirse o antes de su primer partido.',
       'Si una categoría no llega al mínimo de equipos, no se abre y se devuelve la inscripción.'
     ] }
@@ -210,11 +210,11 @@ window.FAITHCUP = {
 
   faq: [
     { p: '¿Quién puede inscribirse?', r: 'Equipos de iglesias. Cada jugador debe cumplir la edad de su categoría por año de nacimiento y presentar documento.' },
-    { p: '¿Cuándo abren y cierran las inscripciones?', r: 'Abren el lunes 23 de noviembre y cierran el domingo 13 de diciembre de 2026.' },
+    { p: '¿Cuándo abren y cierran las inscripciones?', r: 'Abren el lunes 23 de noviembre y cierran el domingo 6 de diciembre de 2026.' },
     { p: '¿Qué regalos se pueden donar?', r: 'Juguetes nuevos o ropa en buen estado. Cada equipo trae mínimo 5. El público también puede donar en cualquier partido.' },
     { p: '¿A dónde van las donaciones?', r: 'Todo lo donado va a niños a través de una fundación aliada. Publicamos la entrega con fotos y video después del torneo.' },
-    { p: '¿Qué pasa si mi categoría no se llena?', r: 'Si al 13 de diciembre no llega al mínimo de equipos, la categoría no se abre y se devuelve la inscripción.' },
+    { p: '¿Qué pasa si mi categoría no se llena?', r: 'Si al 6 de diciembre no llega al mínimo de equipos, la categoría no se abre y se devuelve la inscripción.' },
     { p: '¿Por qué los niños juegan solo el fin de semana?', r: 'Para que los papás no tengan que llevarlos entre semana. El domingo se juega solo desde la 1:00 pm, después de los cultos.' },
-    { p: '¿Puedo agregar jugadores después?', r: 'No. Las plantillas se cierran el 13 de diciembre.' }
+    { p: '¿Puedo agregar jugadores después?', r: 'No. Las plantillas se cierran el 6 de diciembre.' }
   ]
 };

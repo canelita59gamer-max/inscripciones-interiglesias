@@ -248,7 +248,7 @@
       .s{display:flex;flex-direction:column;gap:2mm;font-size:5mm}.s b{color:#c8f000}.k{font-size:4.5mm;letter-spacing:.3em;text-transform:uppercase;color:#c8f000;font-weight:800}</style></head>
       <body><div class="p"><img class="l" src="${location.origin}/assets/logo-arena.png" alt=""><div><p class="k">Misión Navidad · Faith Cup</p><h1>Registra tu <i>regalo</i></h1>
       <p>Escanea, pon tu nombre y entra al <b style="color:#ffe39a">sorteo del Gol Navideño</b>.<br>Cada regalo es una oportunidad más.</p></div>
-      <div class="q"><img src="${src}" alt="QR"></div><div class="s">${redes}</div><p>Sorteo en la premiación · domingo 20 de diciembre · 7:00 pm</p></div>
+      <div class="q"><img src="${src}" alt="QR"></div><div class="s">${redes}</div><p>Sorteo en la premiación · domingo 13 de diciembre · 7:00 pm</p></div>
       <script>window.onload=()=>setTimeout(()=>print(),400)<\/script></body></html>`);
     w.document.close();
   }
