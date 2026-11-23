@@ -64,7 +64,7 @@
       </div>
       <p class="chip-live"><span class="dot"></span>2ª edición · Copa Interiglesias</p>
       <h1 class="home__title"><span class="t1">Faith Cup</span><span class="t2">Navideña</span></h1>
-      <p class="home__meta"><b>9 – 13 DIC</b><i></i>River Side Campus<i></i>Fútbol 5 · Vóley</p>
+      <p class="home__meta"><b>9 – 13 DIC</b><i></i>River Side Campus<i></i>Fútbol · Vóley</p>
 
       <div class="cd" id="countdown">
         <p class="cd__label" id="cd-label">Abren inscripciones en</p>
@@ -83,14 +83,12 @@
         </button>
       </div>
 
-      <button class="mission" type="button" data-go="navidad">
+      <button class="mission" type="button" data-go="navidad" aria-label="Misión Navidad: ver regalos">
         <span class="mission__gift" aria-hidden="true">🎁</span>
-        <span class="mission__txt">
-          <b>Misión Navidad</b>
-          <small>Cada equipo regala 5 juguetes a niños</small>
-          <span class="mission__bar"><span id="mission-fill"></span></span>
-        </span>
+        <span class="mission__txt"><b>Misión Navidad</b><small>5 regalos por equipo</small></span>
         <span class="mission__count"><b id="mission-num">0</b><small id="mission-goal">/ 500</small></span>
+        <svg class="mission__go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <span class="mission__bar" aria-hidden="true"><span id="mission-fill"></span></span>
       </button>
 
       <div class="follow" id="follow" aria-label="Síguenos en redes"></div>
