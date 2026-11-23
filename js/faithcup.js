@@ -598,7 +598,7 @@
     categoria(id) {
       const c = C.categorias.find(x => x.id === id);
       const st = estadoCat(c);
-      const premio = c.premio.tipo === 'dinero' ? 'Hasta ' + money(c.premio.escalas[0].campeon) : 'Trofeo + medallas';
+      const premio = c.premio.tipo === 'dinero' ? 'Hasta ' + money(c.premio.escalas[0].campeon) + ' + trofeo y medallas' : 'Trofeo + medallas';
       return `<span class="badge badge--${st.cls}">${st.txt}</span>
         <h3 id="sheet-title">${esc(c.nombre)}</h3><p class="sub">${esc(c.deporte)} · ${esc(c.edad)} · nacidos ${esc(c.nacimiento)}</p>
         <div class="kv">
@@ -907,6 +907,7 @@
     } else if (p.especie) {
       camp.textContent = 'Trofeo + premio'; camp.dataset.v = 0; sub.textContent = 'Medallas'; sub.dataset.v = 0;
     } else { countTo(camp, p.campeon); countTo(sub, p.sub); }
+    $('#pz-camp-x').hidden = $('#pz-sub-x').hidden = !p || !!p.especie;
 
     // escalera: premio del campeón con 4, 5, 6, 7 y 8 equipos
     $('#pz-ladder').innerHTML = [4, 5, 6, 7, 8].map(k => {
