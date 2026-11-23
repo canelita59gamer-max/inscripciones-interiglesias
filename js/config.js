@@ -57,10 +57,9 @@ window.FAITHCUP = {
       edad: '13 a 17 años', nacimiento: '2009 – 2013',
       cancha: 'Polideportiva (micro)', cuando: 'Mié a vie 4 pm · final el domingo',
       jugadores: 'Hasta 12 por equipo',
-      minEquipos: 4, maxEquipos: 8, inscritos: 0,
+      minEquipos: 4, maxEquipos: 6, inscritos: 0,
       inscripcion: 200000,
       premio: { tipo: 'dinero', escalas: [
-        { min: 8, campeon: 800000, sub: 300000 },
         { min: 6, campeon: 550000, sub: 200000 },
         { min: 4, campeon: 350000, sub: 150000 }
       ] },
@@ -88,10 +87,9 @@ window.FAITHCUP = {
       edad: '15 años o más', nacimiento: '2011 o antes',
       cancha: 'Polideportiva', cuando: 'Sábado y domingo',
       jugadores: 'Hasta 10 · 6 en cancha · mín. 3 mujeres',
-      minEquipos: 4, maxEquipos: 8, inscritos: 0,
+      minEquipos: 4, maxEquipos: 6, inscritos: 0,
       inscripcion: 200000,
       premio: { tipo: 'dinero', escalas: [
-        { min: 8, campeon: 800000, sub: 300000 },
         { min: 6, campeon: 550000, sub: 200000 },
         { min: 4, campeon: 350000, sub: 150000 }
       ] },
