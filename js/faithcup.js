@@ -247,72 +247,112 @@
     return { start() { if (!on) { on = true; requestAnimationFrame(frame); } }, stop() { on = false; } };
   }
 
-  // ---- Escena de premios: trofeo dorado que crece con el premio
+  // ---- Escena de premios: copa dorada de campeón con balón y pedestal
   function trophyScene() {
     const canvas = $('#stage-trophy');
     const renderer = makeRenderer(canvas);
+    renderer.toneMappingExposure = 1.1;
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(0, 1.3, 5.6);
+    const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+    camera.position.set(0, 1.5, 7.2);
     scene.environment = envTexture(renderer);
-    scene.add(new THREE.AmbientLight(0xffffff, .3));
-    const key = new THREE.SpotLight(0xffffff, 2.2, 30, .5, .6); key.position.set(3, 7, 5); scene.add(key);
-    const rim = new THREE.PointLight(0xc8f000, 2.4, 12); rim.position.set(-3, 2, -2); scene.add(rim);
-    const rim2 = new THREE.PointLight(0xe3262f, 2, 12); rim2.position.set(3, 0, -2); scene.add(rim2);
+    scene.add(new THREE.AmbientLight(0xffffff, .25));
+    const key = new THREE.SpotLight(0xfff4dc, 2.6, 30, .55, .6); key.position.set(3, 8, 5); scene.add(key);
+    const fill = new THREE.DirectionalLight(0xffe3a8, .7); fill.position.set(-4, 3, 4); scene.add(fill);
+    const rim = new THREE.PointLight(0xc8f000, 3, 14); rim.position.set(-3.2, 2.6, -2.4); scene.add(rim);
+    const rim2 = new THREE.PointLight(0xe3262f, 2.4, 14); rim2.position.set(3.2, 1, -2.4); scene.add(rim2);
 
-    const gold = new THREE.MeshPhysicalMaterial({ color: 0xf2c14e, metalness: 1, roughness: .18, clearcoat: .6, envMapIntensity: 1.8 });
+    const lin = h => new THREE.Color(h).convertSRGBToLinear();
+    const gold = new THREE.MeshPhysicalMaterial({ color: lin(0xf5c451), metalness: 1, roughness: .14, clearcoat: .8, clearcoatRoughness: .1, envMapIntensity: 2.2, side: THREE.DoubleSide });
+    const goldSatin = new THREE.MeshPhysicalMaterial({ color: lin(0xd9a53a), metalness: 1, roughness: .32, envMapIntensity: 1.8 });
+    const black = new THREE.MeshPhysicalMaterial({ color: 0x0a0a0a, metalness: .5, roughness: .18, clearcoat: 1, clearcoatRoughness: .05 });
+    const lime = new THREE.MeshStandardMaterial({ color: 0xc8f000, emissive: 0x9fbf00, emissiveIntensity: .9 });
+
     const trophy = new THREE.Group();
-    const prof = [[0, 0], [.62, 0], [.62, .1], [.4, .16], [.16, .3], [.11, .62], [.15, .82], [.32, .95], [.52, 1.15], [.64, 1.62], [.58, 1.64], [.47, 1.2], [0, 1.02]]
-      .map(([x, y]) => new THREE.Vector2(x, y));
-    const cup = new THREE.Mesh(new THREE.LatheGeometry(prof, 80), gold); trophy.add(cup);
+    const V = (x, y) => new THREE.Vector2(x, y);
+    // Copa: pared con grosor (exterior subiendo, borde y vuelta por dentro)
+    const cupProf = [V(0, 1.42), V(.2, 1.43), V(.4, 1.5), V(.56, 1.66), V(.68, 1.9), V(.75, 2.2), V(.79, 2.5), V(.84, 2.62), V(.86, 2.66), V(.82, 2.68), V(.74, 2.56), V(.7, 2.22), V(.63, 1.94), V(.5, 1.72), V(.3, 1.58), V(0, 1.54)];
+    trophy.add(new THREE.Mesh(new THREE.LatheGeometry(cupProf, 96), gold));
+    // Aro decorativo verde en la copa
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(.705, .022, 12, 96), lime); ring.rotation.x = Math.PI / 2; ring.position.y = 1.96; trophy.add(ring);
+    // Tallo con nudo
+    const stemProf = [V(.42, .42), V(.3, .5), V(.15, .62), V(.11, .8), V(.2, .9), V(.22, .97), V(.2, 1.04), V(.11, 1.12), V(.1, 1.3), V(.18, 1.4), V(.24, 1.46), V(0, 1.47)];
+    trophy.add(new THREE.Mesh(new THREE.LatheGeometry([V(0, .42), ...stemProf], 64), goldSatin));
+    // Asas curvas
     [-1, 1].forEach(s => {
-      const hdl = new THREE.Mesh(new THREE.TorusGeometry(.26, .045, 16, 40, Math.PI * 1.25), gold);
-      hdl.position.set(s * .6, 1.28, 0); hdl.rotation.z = s > 0 ? -Math.PI * .62 : Math.PI * 1.62; trophy.add(hdl);
+      const curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(s * .7, 2.42, 0), new THREE.Vector3(s * 1.08, 2.5, 0), new THREE.Vector3(s * 1.22, 2.22, 0),
+        new THREE.Vector3(s * 1.06, 1.86, 0), new THREE.Vector3(s * .78, 1.66, 0), new THREE.Vector3(s * .56, 1.62, 0)
+      ]);
+      trophy.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 64, .05, 14, false), gold));
+      const tip = new THREE.Mesh(new THREE.SphereGeometry(.07, 20, 14), gold); tip.position.set(s * 1.22, 2.22, 0); trophy.add(tip);
     });
-    const star = new THREE.Mesh(new THREE.OctahedronGeometry(.16, 0), new THREE.MeshStandardMaterial({ color: 0xc8f000, emissive: 0xc8f000, emissiveIntensity: .8, metalness: .3, roughness: .2 }));
-    star.position.set(0, 1.0, .5); trophy.add(star);
-    const base = new THREE.Mesh(new THREE.CylinderGeometry(.85, .95, .38, 64), new THREE.MeshPhysicalMaterial({ color: 0x0b0b0b, metalness: .4, roughness: .25, clearcoat: 1 }));
-    base.position.y = -.19;
-    const band = new THREE.Mesh(new THREE.CylinderGeometry(.865, .875, .06, 64), new THREE.MeshStandardMaterial({ color: 0xc8f000, emissive: 0x9fbf00, emissiveIntensity: .7 }));
-    band.position.y = -.12;
-    const all = new THREE.Group(); all.add(trophy, base, band); all.position.y = -.55; scene.add(all);
+    // Balón dorado sobre la copa
+    const ball = soccerBall(.42, 0xf5c451, 0x6b4a10, { metalness: .9, roughness: .2, clearcoat: 1, envMapIntensity: 2 });
+    ball.position.y = 2.86; trophy.add(ball);
+
+    // Pedestal de dos niveles con placa
+    const ped = new THREE.Group();
+    const b1 = new THREE.Mesh(new THREE.CylinderGeometry(.92, 1.02, .34, 72), black); b1.position.y = .17;
+    const b2 = new THREE.Mesh(new THREE.CylinderGeometry(.62, .72, .14, 72), black); b2.position.y = .41;
+    const band1 = new THREE.Mesh(new THREE.CylinderGeometry(.935, .945, .045, 72), lime); band1.position.y = .3;
+    const band2 = new THREE.Mesh(new THREE.CylinderGeometry(1.03, 1.03, .03, 72), goldSatin); band2.position.y = .015;
+    ped.add(b1, b2, band1, band2);
+    // Placa grabada
+    const pc = document.createElement('canvas'); pc.width = 512; pc.height = 128;
+    const pg = pc.getContext('2d');
+    const grd = pg.createLinearGradient(0, 0, 0, 128); grd.addColorStop(0, '#ffe08a'); grd.addColorStop(1, '#b8862a');
+    pg.fillStyle = grd; pg.fillRect(0, 0, 512, 128);
+    pg.strokeStyle = '#7a5410'; pg.lineWidth = 6; pg.strokeRect(8, 8, 496, 112);
+    pg.fillStyle = '#4a3208'; pg.textAlign = 'center'; pg.textBaseline = 'middle';
+    pg.font = '900 50px Arial, sans-serif'; pg.fillText('FAITH CUP 2026', 256, 56);
+    pg.font = '700 22px Arial, sans-serif'; pg.fillText('CAMPEÓN', 256, 98);
+    const ptex = new THREE.CanvasTexture(pc); ptex.encoding = THREE.sRGBEncoding; ptex.anisotropy = 4;
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(.953, .953, .16, 48, 1, true, -.55, 1.1),
+      new THREE.MeshStandardMaterial({ map: ptex, metalness: .7, roughness: .35 }));
+    plate.position.y = .15; ped.add(plate);
+
+    const all = new THREE.Group(); all.add(trophy, ped); all.position.y = -1.3; scene.add(all);
 
     // Disco de luz bajo el trofeo
-    const glow = new THREE.Mesh(new THREE.CircleGeometry(1.8, 48), new THREE.MeshBasicMaterial({ map: softSprite(), color: 0xf2c14e, transparent: true, opacity: .35, depthWrite: false, blending: THREE.AdditiveBlending }));
-    glow.rotation.x = -Math.PI / 2; glow.position.y = -.74; scene.add(glow);
+    const glow = new THREE.Mesh(new THREE.CircleGeometry(2.1, 48), new THREE.MeshBasicMaterial({ map: softSprite(), color: 0xf2c14e, transparent: true, opacity: .4, depthWrite: false, blending: THREE.AdditiveBlending }));
+    glow.rotation.x = -Math.PI / 2; glow.position.y = -1.29; scene.add(glow);
+    // Halo detrás
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: softSprite(), color: 0xffd36b, transparent: true, opacity: .28, depthWrite: false, blending: THREE.AdditiveBlending }));
+    halo.scale.set(5, 5, 1); halo.position.set(0, .4, -1.5); scene.add(halo);
 
     // Chispas doradas
-    const N = 60, p = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) { const a = Math.random() * 6.28, r = 1 + Math.random() * 1.6; p[i * 3] = Math.cos(a) * r; p[i * 3 + 1] = Math.random() * 3 - .6; p[i * 3 + 2] = Math.sin(a) * r; }
+    const N = 80, p = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) { const a = Math.random() * 6.28, r = 1.3 + Math.random() * 1.6; p[i * 3] = Math.cos(a) * r; p[i * 3 + 1] = Math.random() * 3.6 - 1.4; p[i * 3 + 2] = Math.sin(a) * r; }
     const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.BufferAttribute(p, 3));
     const sparks = new THREE.Points(sg, new THREE.PointsMaterial({ size: .09, map: softSprite(), color: 0xffe39a, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
     scene.add(sparks);
 
-    const state = { scale: 1, spin: 0, dim: 0 };
+    const state = { spin: 0, pop: 1 };
     let on = false, t0 = performance.now();
     function frame(now) {
       if (!on) return;
       fit(renderer, camera, canvas);
       const t = (now - t0) / 1000 * (calm ? .4 : 1);
-      all.rotation.y = t * .6 + state.spin;
-      all.scale.setScalar(state.scale);
-      star.rotation.y = t * 2;
-      sparks.rotation.y = -t * .3;
-      gold.color.setRGB(0.95 - state.dim * .55, 0.76 - state.dim * .4, 0.31 - state.dim * .05);
-      glow.material.opacity = .35 * (1 - state.dim * .8) * state.scale;
+      all.rotation.y = Math.sin(t * .5) * .55 + state.spin;
+      all.position.y = -1.3 + Math.sin(t * 1.3) * .04;
+      all.scale.setScalar(state.pop);
+      ball.rotation.y = t * .8;
+      sparks.rotation.y = -t * .25;
+      halo.material.opacity = .24 + Math.sin(t * 2) * .05;
       camera.position.x += (pointer.x * .8 - camera.position.x) * .05;
-      camera.lookAt(0, .55, 0);
+      camera.lookAt(0, .05, 0);
       renderer.render(scene, camera);
       requestAnimationFrame(frame);
     }
     return {
       start() { if (!on) { on = true; requestAnimationFrame(frame); } },
       stop() { on = false; },
-      // nivel 0..1 según el premio; dim=1 si la categoría no abre
-      set(level, dim) {
-        if (!hasGsap) { state.scale = .7 + level * .45; state.dim = dim; return; }
-        gsap.to(state, { scale: .62 + level * .5, dim, duration: .9, ease: 'elastic.out(1,.55)' });
-        gsap.fromTo(state, { spin: state.spin }, { spin: state.spin + Math.PI * 2, duration: 1.1, ease: 'power3.out' });
+      // al cambiar de categoría: un giro y un pequeño salto
+      set() {
+        if (!hasGsap) return;
+        gsap.fromTo(state, { spin: state.spin }, { spin: state.spin + Math.PI * 2, duration: 1.2, ease: 'power3.out' });
+        gsap.fromTo(state, { pop: .9 }, { pop: 1, duration: .9, ease: 'elastic.out(1,.5)' });
       }
     };
   }
@@ -512,7 +552,7 @@
   function enterAnim(name) {
     if (!hasGsap) return;
     const v = $(`#v-${name}`);
-    const items = $$('.view__head > *, .days, .agenda > *, .pills, .teams, .result, .ladder, .format, .gifts, .candy, .goals, .minicards, .xmas__tree, .hint, .dots', v);
+    const items = $$('.view__head > *, .days, .agenda > *, .pills, .result, .result__note, .format, .gifts, .candy, .goals, .minicards, .xmas__tree, .hint, .dots', v);
     gsap.fromTo(items, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .7, ease: 'power3.out', stagger: .05, delay: .25 });
     if (name === 'navidad') { lightTree(); missionIntro(false); }
     if (name === 'categorias') coverflowUpdate();
@@ -525,7 +565,7 @@
     // Deslizar a izquierda/derecha para cambiar de sección
     let sx = 0, sy = 0, st = 0, ok = false;
     $('#views').addEventListener('touchstart', e => {
-      ok = !e.target.closest('.coverflow, .pills, .teams__row, .days');
+      ok = !e.target.closest('.coverflow, .pills, .days');
       sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = Date.now();
     }, { passive: true });
     $('#views').addEventListener('touchend', e => {
@@ -612,7 +652,7 @@
           <div class="wide"><small>Para abrir</small><b>Mínimo ${c.minEquipos} equipos · máximo ${c.maxEquipos}</b></div>
         </div>
         ${cuposBlock(c)}
-        <button class="btn btn--glass btn--block" type="button" data-go="premios" data-close data-cat="${c.id}" style="margin-bottom:8px">Ver cómo cambia el premio</button>
+        <button class="btn btn--glass btn--block" type="button" data-go="premios" data-close data-cat="${c.id}" style="margin-bottom:8px">Ver premios</button>
         <button class="btn btn--lime btn--block" type="button" data-reg="${c.id}">Inscribir equipo en ${esc(c.nombre)}</button>`;
     },
     formato() {
@@ -880,11 +920,6 @@
     prizeState.cat = C.categorias.find(c => c.destacada) || C.categorias[0];
     $('#pz-cats').innerHTML = C.categorias.map(c => `<button type="button" role="radio" aria-checked="${c === prizeState.cat}" data-id="${c.id}">${esc(c.nombre)}</button>`).join('');
     $('#pz-cats').addEventListener('click', e => { const b = e.target.closest('button'); if (b) selectPrizeCat(b.dataset.id); });
-    $('#pz-teams').innerHTML = [4, 5, 6, 7, 8].map(n => `<button type="button" role="radio" aria-checked="${n === 8}" data-n="${n}" aria-label="${n} equipos">${n}</button>`).join('');
-    $('#pz-teams').addEventListener('click', e => {
-      const b = e.target.closest('button'); if (!b) return;
-      prizeState.n = Number(b.dataset.n); renderPrize(true);
-    });
     renderPrize(false);
   }
   function countTo(el, to) {
@@ -894,33 +929,16 @@
     gsap.to(o, { v: to, duration: .9, ease: 'power3.out', onUpdate: () => { el.textContent = money(Math.round(o.v / 10000) * 10000); } });
   }
   function renderPrize(animate) {
-    const { cat, n } = prizeState;
-    $$('#pz-teams button').forEach(b => {
-      b.setAttribute('aria-checked', Number(b.dataset.n) === n);
-      b.classList.toggle('no', Number(b.dataset.n) < cat.minEquipos);
-    });
+    const cat = prizeState.cat, n = prizeState.n = cat.maxEquipos;
     $('#pz-fee').textContent = 'Inscripción ' + money(cat.inscripcion) + ' por equipo';
-    const p = prizeFor(cat, n), res = $('#pz-result'), camp = $('#pz-camp'), sub = $('#pz-sub');
-    res.classList.toggle('is-closed', !p);
-    if (!p) {
-      camp.textContent = 'No abre'; camp.dataset.v = 0; sub.textContent = `Mín. ${cat.minEquipos}`; sub.dataset.v = 0;
-    } else if (p.especie) {
-      camp.textContent = 'Trofeo + premio'; camp.dataset.v = 0; sub.textContent = 'Medallas'; sub.dataset.v = 0;
+    const p = prizeFor(cat, n), camp = $('#pz-camp'), sub = $('#pz-sub');
+    if (p.especie) {
+      camp.textContent = 'Trofeo'; camp.dataset.v = 0; sub.textContent = 'Medallas'; sub.dataset.v = 0;
     } else { countTo(camp, p.campeon); countTo(sub, p.sub); }
-    $('#pz-camp-x').hidden = $('#pz-sub-x').hidden = !p || !!p.especie;
-
-    // escalera: premio del campeón con 4, 5, 6, 7 y 8 equipos
-    $('#pz-ladder').innerHTML = [4, 5, 6, 7, 8].map(k => {
-      const q = prizeFor(cat, k);
-      const v = !q ? 0 : q.especie ? .45 : q.campeon / MAX_PRIZE;
-      const lbl = !q ? '✕' : q.especie ? '🏆' : '$' + (q.campeon / 1e6).toLocaleString('es-CO', { maximumFractionDigits: 2 }) + 'M';
-      return `<div class="${k === n ? 'on' : ''} ${!q ? 'zero' : ''}" style="height:${Math.max(14, v * 100)}%"><span>${lbl}</span></div>`;
-    }).join('');
-
-    $('#pz-format-txt').textContent = !p ? `No abre con ${n} equipos` : n === 8 ? '2 grupos de 4 → semis → final' : `Un solo grupo de ${n} → final`;
-
-    const level = !p ? .2 : p.especie ? .45 : p.campeon / MAX_PRIZE;
-    scenes.trophy && scenes.trophy.set(level, p ? 0 : 1);
+    $('#pz-camp-x').hidden = $('#pz-sub-x').hidden = !!p.especie;
+    $('#pz-note').textContent = p.especie ? 'Premio en especie' : 'Con el cupo completo (' + n + ' equipos)';
+    $('#pz-format-txt').textContent = n === 8 ? '2 grupos de 4 → semis → final' : 'Un solo grupo de ' + n + ' → final';
+    scenes.trophy && scenes.trophy.set(1, 0);
     if (animate && hasGsap) gsap.fromTo('#pz-result', { scale: .96 }, { scale: 1, duration: .5, ease: 'back.out(3)' });
   }
 
